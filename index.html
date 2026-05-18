@@ -2249,7 +2249,7 @@ function renderEncounter(){
 
   const diffColor={EASY:'var(--green)',MODERATE:'var(--blue)',HARD:'var(--orange)',BRUTAL:'var(--red)',BOSS:'var(--red)'}[enc.diff]||'var(--muted)';
 
-  const imgSrc=ENCOUNTER_IMAGES[enc.id];
+  const imgSrc=ENCOUNTER_IMAGES[enc.id]||'images/encounters/placeholder_enc.jpg';
   const imgInner=imgSrc
     ?`<img src="${imgSrc}" alt="${enc.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover">`
     :`<div class="enc-iph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="${enc.boss?'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5':'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z'}" stroke-linecap="round"/></svg><span>${enc.id.toUpperCase()}.JPG</span></div>`;
