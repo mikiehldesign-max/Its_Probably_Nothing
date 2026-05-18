@@ -1,0 +1,24 @@
+Drop your encounter card illustrations in this folder.
+
+Recommended size: 600 x 280px, JPG or PNG.
+
+Files needed:
+  treeline.jpg       — Something at the Treeline
+  cornfield.jpg      — The Cornfield at 3am
+  motel.jpg          — The Motel on Route 9
+  broadcast.jpg      — Broadcast Interruption
+  mothman.jpg        — The Mothman Warning
+  skinwalker.jpg     — The Neighbor That Isn't
+  static.jpg         — The Static Between Stations
+  documents.jpg      — The Leaked Documents
+  cabin.jpg          — What's in the Cabin
+  gasstation.jpg     — Night Shift
+  grey.jpg           — First Contact
+  algorithm.jpg      — The Algorithm Knows
+  pogs.jpg           — The Pog Championship of 1996
+  wendigo.jpg        — The Wendigo in the Storm
+  mirror.jpg         — The Mirror in the Hallway
+  boss_arrival.jpg   — The Arrival (Boss)
+  boss_theone.jpg    — The One That Was Always There (Boss)
+
+Then uncomment the matching lines in the ENCOUNTER_IMAGES map in index.html.

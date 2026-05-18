@@ -1,0 +1,2331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT'S PROBABLY NOTHING</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root{
+  --acid:#c8f400;--black:#0a0a0a;--dark:#111;--mid:#1c1c1c;
+  --panel:#151515;--border:#2a2a2a;--text:#e8e8e8;--muted:#888;
+  --red:#e63946;--blue:#4aa8e8;--orange:#f4a261;--green:#52b788;
+  --purple:#9b59b6;--pink:#cc44aa;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px}
+body{background:var(--black);color:var(--text);font-family:'Share Tech Mono',monospace;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+body::before{content:'';position:fixed;inset:0;opacity:.25;pointer-events:none;z-index:999;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E")}
+
+/* ── HEADER ── */
+.hdr{background:var(--acid);padding:8px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--black);letter-spacing:4px;line-height:1}
+.logo small{display:block;font-size:10px;letter-spacing:5px;opacity:.5;font-family:'Share Tech Mono',monospace}
+.tagline{font-family:'Special Elite',serif;font-size:11px;color:rgba(0,0,0,.45);font-style:italic}
+.hdr-r{display:flex;gap:6px}
+
+/* ── BUTTONS ── */
+.btn{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;padding:6px 14px;cursor:pointer;border:1px solid currentColor;background:transparent;transition:all .15s}
+.btn:hover:not(:disabled){filter:brightness(1.3)}
+.btn:disabled{opacity:.2;cursor:not-allowed}
+.bl{color:var(--acid);border-color:var(--acid)}.bl:hover{background:var(--acid)!important;color:var(--black)!important}
+.bo{color:var(--orange);border-color:var(--orange)}.bo:hover{background:var(--orange)!important;color:var(--black)!important}
+.br{color:var(--red);border-color:var(--red)}.br:hover{background:var(--red)!important;color:#fff!important}
+.bb{color:var(--blue);border-color:var(--blue)}.bb:hover{background:var(--blue)!important;color:var(--black)!important}
+.bg{color:var(--green);border-color:var(--green)}.bg:hover{background:var(--green)!important;color:var(--black)!important}
+.bk{color:var(--black);border-color:rgba(0,0,0,.3)}.bk:hover{background:rgba(0,0,0,.1)!important}
+
+/* ── LOG ── */
+.logbar{background:var(--panel);border-bottom:1px solid var(--border);padding:5px 20px;font-size:12px;color:var(--muted);flex-shrink:0;display:flex;align-items:center;gap:8px}
+.log-tag{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:3px;color:var(--acid);flex-shrink:0}
+
+/* ── MAIN LAYOUT ── */
+/* Hand at top, game content below */
+.main{display:flex;flex-direction:column;flex:1;overflow:hidden}
+
+/* HAND AREA — top */
+.hand-area{background:var(--panel);border-bottom:2px solid var(--acid);padding:12px 16px;flex-shrink:0}
+.hand-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.hand-title{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:4px;color:var(--muted)}
+.hand-info{font-size:11px;color:var(--acid)}
+.hand-cards{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.hand-cards::-webkit-scrollbar{height:3px}
+.hand-cards::-webkit-scrollbar-track{background:var(--black)}
+.hand-cards::-webkit-scrollbar-thumb{background:var(--border)}
+
+/* GAME AREA — bottom */
+.game-area{display:grid;grid-template-columns:1fr 270px;flex:1;overflow:hidden}
+
+/* ENCOUNTER ZONE */
+.enc-zone{padding:14px;overflow-y:auto;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+.enc-zone::-webkit-scrollbar{width:3px}
+.enc-zone::-webkit-scrollbar-track{background:var(--black)}
+.enc-zone::-webkit-scrollbar-thumb{background:var(--border)}
+
+/* ENCOUNTER CARD */
+.enc-card{background:var(--dark);border:1px solid var(--border)}
+.enc-topbar{height:3px;background:var(--acid)}
+.enc-card.boss .enc-topbar{background:var(--red)}
+.enc-img{width:100%;height:110px;background:var(--black);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.enc-img img{width:100%;height:100%;object-fit:cover}
+.enc-iph{display:flex;flex-direction:column;align-items:center;gap:4px}
+.enc-iph svg{width:30px;height:30px;opacity:.07}
+.enc-iph span{font-size:9px;color:var(--muted);letter-spacing:2px;opacity:.5}
+.enc-body{padding:12px}
+.enc-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.enc-cat{font-size:9px;letter-spacing:4px;color:var(--muted)}
+.enc-card.boss .enc-cat{color:var(--red)}
+.diff-badge{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;padding:2px 7px;border:1px solid}
+.enc-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:#fff;line-height:1;margin-bottom:8px}
+.enc-sit{font-family:'Special Elite',serif;font-size:12px;color:var(--muted);line-height:1.85;margin-bottom:10px;padding-left:10px;border-left:2px solid var(--border)}
+.enc-rules{display:flex;flex-direction:column;gap:6px}
+.enc-rule{display:flex;gap:8px;align-items:flex-start}
+.rtag{font-family:'Bebas Neue',sans-serif;font-size:8px;letter-spacing:2px;padding:2px 5px;flex-shrink:0;margin-top:2px}
+.rt-ch{background:rgba(244,162,97,.15);color:var(--orange);border:1px solid rgba(244,162,97,.3)}
+.rt-pm{background:rgba(200,244,0,.12);color:var(--acid);border:1px solid rgba(200,244,0,.25)}
+.rt-win{background:rgba(82,183,136,.15);color:var(--green);border:1px solid rgba(82,183,136,.3)}
+.rt-fail{background:rgba(230,57,70,.15);color:var(--red);border:1px solid rgba(230,57,70,.3)}
+.rt-no{background:rgba(230,57,70,.2);color:var(--red);border:1px solid rgba(230,57,70,.4)}
+.rt-open{background:rgba(82,183,136,.12);color:var(--green);border:1px solid rgba(82,183,136,.25)}
+.rbody{font-size:12px;color:var(--text);line-height:1.6}
+.rbody strong{color:var(--acid);font-weight:normal}
+
+/* PLAYED ZONE */
+.played-zone{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:10px}
+.pz-lbl{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:4px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.pz-lbl::after{content:'';flex:1;height:1px;background:var(--border)}
+.pz-cards{display:flex;gap:7px;flex-wrap:wrap;min-height:28px}
+.pz-empty{font-size:11px;color:var(--muted);letter-spacing:1px}
+.mc{background:var(--mid);border:1px solid var(--border);padding:6px 9px;min-width:100px}
+.mc.win{border-color:var(--acid)}
+.mc.icard{border-color:rgba(204,68,170,.5)}
+.mc-p{font-size:9px;color:var(--acid);letter-spacing:2px;margin-bottom:1px}
+.mc-n{font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;line-height:1}
+.mc-m{font-size:9px;color:var(--muted);margin-top:1px}
+
+/* ACTION BAR */
+.abar{display:flex;gap:7px;align-items:center;padding:8px 14px;background:var(--black);border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.enc-ctr{font-size:11px;color:var(--muted);margin-left:auto}
+.enc-ctr span{color:var(--acid);font-family:'Bebas Neue',sans-serif;font-size:15px}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-track{background:var(--black)}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border)}
+
+.turn-ind{padding:10px 12px;border-bottom:1px solid var(--border);background:rgba(200,244,0,.02)}
+.ti-lbl{font-size:9px;letter-spacing:3px;color:var(--muted);margin-bottom:2px}
+.ti-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;color:var(--acid)}
+.ti-sub{font-size:10px;color:var(--muted);margin-top:1px}
+
+.scoreboard{padding:10px 12px;border-bottom:1px solid var(--border)}
+.sb-ttl{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:4px;color:var(--muted);margin-bottom:7px}
+.sb-row{display:flex;align-items:center;justify-content:space-between;padding:5px 7px;margin-bottom:3px;background:var(--mid);border:1px solid var(--border)}
+.sb-row.active{border-left:3px solid var(--acid)}
+.sb-name{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:#fff}
+.sb-row.active .sb-name{color:var(--acid)}
+.sb-r{display:flex;align-items:center;gap:5px}
+.sb-trophies{display:flex;gap:2px;flex-wrap:wrap;max-width:60px;justify-content:flex-end}
+.tpip{width:8px;height:8px;background:rgba(200,244,0,.2);border:1px solid rgba(200,244,0,.35)}
+.tpip.boss{background:rgba(230,57,70,.3);border-color:rgba(230,57,70,.5)}
+.sb-cards{font-size:10px;color:var(--muted)}
+.sb-cards span{color:var(--text);font-family:'Bebas Neue',sans-serif;font-size:14px}
+
+.deck-stat{padding:10px 12px;border-bottom:1px solid var(--border)}
+.ds-lbl{font-size:9px;letter-spacing:3px;color:var(--muted);margin-bottom:5px}
+.ds-bar{height:3px;background:var(--border);margin-bottom:4px}
+.ds-fill{height:100%;background:var(--acid);transition:width .5s}
+.ds-txt{font-size:10px;color:var(--muted)}
+.ds-txt span{color:var(--text)}
+
+/* ── PLAYER CARDS (larger) ── */
+.card{width:155px;background:var(--mid);border:1px solid var(--border);cursor:pointer;transition:all .18s;position:relative;flex-shrink:0;display:flex;flex-direction:column}
+.card:hover:not(.spent){border-color:var(--acid);transform:translateY(-5px)}
+.card.sel{border-color:var(--acid);border-width:2px;transform:translateY(-7px);box-shadow:0 0 18px rgba(200,244,0,.18)}
+.card.spent{opacity:.3;cursor:not-allowed;transform:none!important}
+.card.icard{border-color:rgba(204,68,170,.35)}
+.card.icard:hover:not(.spent){border-color:var(--pink);box-shadow:0 0 14px rgba(204,68,170,.18)}
+.card.icard.sel{border-color:var(--pink);box-shadow:0 0 14px rgba(204,68,170,.25)}
+
+.cimg{width:100%;height:82px;background:var(--black);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.cimg img{width:100%;height:100%;object-fit:cover}
+.cph{display:flex;flex-direction:column;align-items:center;gap:2px}
+.cph svg{width:22px;height:22px;opacity:.1;color:var(--muted)}
+.cph span{font-size:7px;color:var(--muted);letter-spacing:2px;opacity:.4}
+.ti-weapon{background:rgba(230,57,70,.05)}.ti-artifact{background:rgba(244,162,97,.05)}
+.ti-tool{background:rgba(74,168,232,.05)}.ti-instinct{background:rgba(82,183,136,.05)}
+.ti-memory{background:rgba(155,89,182,.08)}.ti-interference{background:rgba(204,68,170,.07)}
+
+.cbody{padding:8px;display:flex;flex-direction:column;gap:3px;flex:1}
+.cbadge{font-size:8px;letter-spacing:2px;padding:2px 5px;display:inline-block;margin-bottom:2px}
+.bweapon{background:rgba(230,57,70,.15);color:var(--red);border:1px solid rgba(230,57,70,.3)}
+.bartifact{background:rgba(244,162,97,.15);color:var(--orange);border:1px solid rgba(244,162,97,.3)}
+.btool{background:rgba(74,168,232,.15);color:var(--blue);border:1px solid rgba(74,168,232,.3)}
+.binstinct{background:rgba(82,183,136,.15);color:var(--green);border:1px solid rgba(82,183,136,.3)}
+.bmemory{background:rgba(155,89,182,.15);color:var(--purple);border:1px solid rgba(155,89,182,.3)}
+.binterference{background:rgba(204,68,170,.15);color:var(--pink);border:1px solid rgba(204,68,170,.3)}
+
+.cname{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#fff;line-height:1.1}
+.cflavor{font-size:9px;color:var(--muted);font-style:italic;font-family:'Special Elite',serif;line-height:1.45}
+.ceffect{font-size:9px;color:var(--text);line-height:1.45;margin-top:1px}
+.cfoot{display:flex;gap:3px;margin-top:auto;padding-top:5px;border-top:1px solid var(--border);align-items:center}
+.cpwr{font-family:'Bebas Neue',sans-serif;font-size:11px;padding:2px 5px}
+.cp-fixed{background:rgba(200,244,0,.15);color:var(--acid)}
+.cp-dice{background:rgba(155,89,182,.2);color:var(--purple);letter-spacing:1px}
+.cp-sab{background:rgba(204,68,170,.15);color:var(--pink)}
+
+/* ── DICE ROLL OVERLAY ── */
+.dice-ov{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:960;display:flex;align-items:center;justify-content:center;padding:20px}
+.dice-panel{background:var(--dark);border:1px solid var(--border);border-top:3px solid var(--purple);max-width:400px;width:100%;padding:24px;text-align:center}
+.dice-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--purple);margin-bottom:4px}
+.dice-sub{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.dice-display{display:flex;justify-content:center;gap:16px;margin-bottom:20px}
+.die{width:64px;height:64px;background:var(--mid);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--muted);transition:all .3s}
+.die.rolled{border-color:var(--purple);color:var(--purple)}
+.dice-total{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--purple);margin-bottom:6px;line-height:1}
+.dice-total-lbl{font-size:10px;color:var(--muted);letter-spacing:3px;margin-bottom:16px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px) rotate(-5deg)}75%{transform:translateX(6px) rotate(5deg)}}
+.die.shaking{animation:shake .4s ease-in-out}
+
+/* ── TIEBREAKER ── */
+.tie-ov{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:961;display:flex;align-items:center;justify-content:center;padding:20px}
+.tie-panel{background:var(--dark);border:1px solid var(--border);border-top:3px solid var(--orange);max-width:420px;width:100%;padding:24px}
+.tie-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--orange);margin-bottom:4px}
+.tie-sub{font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6}
+.tie-rows{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.tie-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--mid);border:1px solid var(--border)}
+.tie-row.win{border-color:var(--acid)}
+.tie-pn{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:#fff}
+.tie-row.win .tie-pn{color:var(--acid)}
+.tie-rv{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--orange)}
+.tie-row.win .tie-rv{color:var(--acid)}
+
+/* ── RESULT MODAL ── */
+.res-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:962;display:flex;align-items:center;justify-content:center;padding:20px}
+.res-panel{background:var(--dark);border:1px solid var(--border);max-width:460px;width:100%}
+.res-top{padding:16px 18px;border-bottom:1px solid var(--border)}
+.res-top.suc{border-top:3px solid var(--green)}
+.res-top.fail{border-top:3px solid var(--red)}
+.res-top.boss{border-top:3px solid var(--acid)}
+.res-eye{font-size:9px;letter-spacing:4px;color:var(--muted);margin-bottom:3px}
+.res-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;line-height:1}
+.res-title.suc{color:var(--green)}.res-title.fail{color:var(--red)}.res-title.boss{color:var(--acid)}
+.res-body{padding:16px 18px}
+.res-desc{font-family:'Special Elite',serif;font-size:13px;color:var(--muted);line-height:1.8;margin-bottom:12px}
+.res-winner{background:var(--mid);border:1px solid var(--border);border-left:3px solid var(--acid);padding:10px 12px;margin-bottom:12px}
+.rw-lbl{font-size:9px;letter-spacing:3px;color:var(--muted);margin-bottom:2px}
+.rw-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--acid)}
+.rw-card{font-size:11px;color:var(--text);margin-top:2px}
+.res-btns{display:flex;gap:8px}
+
+/* ── FINAL SCORE ── */
+.final-ov{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:970;display:flex;align-items:center;justify-content:center;padding:20px}
+.final-panel{background:var(--dark);border:1px solid var(--border);border-top:3px solid var(--acid);max-width:440px;width:100%;padding:24px}
+.final-t{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:6px;color:var(--acid);line-height:1;margin-bottom:2px}
+.final-s{font-family:'Special Elite',serif;font-size:12px;color:var(--muted);font-style:italic;margin-bottom:4px}
+.final-tag{font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:18px}
+.final-rows{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}
+.final-row{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;background:var(--mid);border:1px solid var(--border)}
+.final-row.win{border-color:var(--acid);background:rgba(200,244,0,.04)}
+.fr-rank{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--muted);width:22px}
+.final-row.win .fr-rank{color:var(--acid)}
+.fr-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:#fff;flex:1;padding:0 10px}
+.final-row.win .fr-name{color:var(--acid)}
+.fr-score .num{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--text)}
+.fr-score .lbl{font-size:8px;color:var(--muted);letter-spacing:2px;text-align:right}
+
+/* ── SETUP ── */
+.setup-ov{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:980;display:flex;align-items:center;justify-content:center;padding:20px}
+.setup-panel{background:var(--dark);border:1px solid var(--border);border-top:3px solid var(--acid);max-width:480px;width:100%;padding:24px;max-height:90vh;overflow-y:auto}
+.setup-logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:5px;color:var(--acid);line-height:1}
+.setup-tag{font-family:'Special Elite',serif;font-size:13px;color:var(--muted);font-style:italic;margin-bottom:3px}
+.setup-sub{font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:20px}
+.setup-lbl{font-size:10px;letter-spacing:3px;color:var(--muted);margin-bottom:6px;display:block}
+.pi-rows{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.pi-row{display:flex;gap:7px;align-items:center}
+.pi-row input{background:var(--mid);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:13px;padding:7px 10px;flex:1;outline:none}
+.pi-row input:focus{border-color:var(--acid)}
+.pi-row input::placeholder{color:var(--muted)}
+.pi-rm{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:14px;width:27px;height:27px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pi-rm:hover{border-color:var(--red);color:var(--red)}
+.setup-note{font-size:11px;color:var(--muted);line-height:1.85;margin-top:12px;padding:11px;background:rgba(200,244,0,.03);border:1px solid rgba(200,244,0,.08)}
+.setup-note strong{color:var(--acid);font-weight:normal}
+
+/* ── TUTORIAL ── */
+.tut-ov{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:965;display:flex;align-items:center;justify-content:center;padding:20px}
+.tut-panel{background:var(--dark);border:1px solid var(--border);border-top:3px solid var(--acid);max-width:480px;width:100%;max-height:90vh;overflow-y:auto}
+.tut-hdr{background:var(--acid);padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.tut-hdr h2{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;color:var(--black)}
+.tut-ctr{font-size:10px;color:rgba(0,0,0,.5)}
+.tut-body{padding:18px}
+.tut-t{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--acid);margin-bottom:8px}
+.tut-p{font-size:12px;color:var(--text);line-height:1.9;margin-bottom:10px}
+.tut-p strong{color:var(--acid);font-weight:normal}
+.tut-box{background:var(--mid);border:1px solid var(--border);border-left:3px solid var(--acid);padding:10px 12px;margin-bottom:10px}
+.tut-box .tt{font-size:9px;letter-spacing:3px;color:var(--muted);margin-bottom:5px}
+.tut-box .tb{font-size:11px;color:var(--text);line-height:1.7}
+.tut-box .tb span{color:var(--acid)}
+.tut-tip{background:rgba(200,244,0,.03);border:1px solid rgba(200,244,0,.1);padding:8px 11px;font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:10px}
+.tut-tip::before{content:'TIP  ';color:var(--acid);letter-spacing:3px}
+.tut-ann{display:flex;gap:7px;margin-bottom:8px;align-items:flex-start}
+.tut-ann .dot{width:5px;height:5px;background:var(--acid);flex-shrink:0;margin-top:5px}
+.tut-ann .at{font-size:11px;color:var(--text);line-height:1.5}
+.tut-ann .at strong{color:var(--acid);font-weight:normal}
+.tut-nav{display:flex;justify-content:space-between;align-items:center;padding-top:6px}
+.tprog{display:flex;gap:3px}
+.tdot{width:5px;height:5px;background:var(--border)}
+.tdot.act{background:var(--acid)}.tdot.dn{background:var(--muted)}
+
+/* ── NOTIFY ── */
+.notif{position:fixed;top:56px;left:50%;transform:translateX(-50%);background:var(--acid);color:var(--black);font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;padding:7px 18px;z-index:990;pointer-events:none;transition:opacity .3s;white-space:nowrap}
+.notif.fade{opacity:0}
+
+.hidden{display:none!important}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--black)}::-webkit-scrollbar-thumb{background:var(--border)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div>
+    <div class="logo">IT'S PROBABLY NOTHING <small>A COOPERATIVE STORY CARD GAME</small></div>
+    <div class="tagline">"It wasn't."</div>
+  </div>
+  <div class="hdr-r">
+    <button class="btn bk" onclick="showTut(0)">? HOW TO PLAY</button>
+    <button class="btn bk" onclick="newGame()">NEW GAME</button>
+  </div>
+</div>
+
+<!-- LOG -->
+<div class="logbar">
+  <span class="log-tag">///</span>
+  <span id="log">Welcome. Set up your players and begin.</span>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HAND AREA (top) -->
+  <div class="hand-area">
+    <div class="hand-hdr">
+      <div class="hand-title">YOUR HAND</div>
+      <span class="hand-info" id="hand-info">START A GAME TO DEAL CARDS</span>
+    </div>
+    <div class="hand-cards" id="hand-cards">
+      <div style="color:var(--muted);font-size:12px;letter-spacing:2px;padding:8px">No cards yet — start a game</div>
+    </div>
+  </div>
+
+  <!-- GAME AREA (encounter + sidebar) -->
+  <div class="game-area">
+
+    <!-- ENCOUNTER ZONE -->
+    <div class="enc-zone" id="enc-zone">
+      <div style="color:var(--muted);font-size:12px;letter-spacing:2px;padding:24px;text-align:center;line-height:2.5">
+        START A NEW GAME<br>TO FLIP YOUR FIRST ENCOUNTER
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="turn-ind">
+        <div class="ti-lbl">CURRENT TURN</div>
+        <div class="ti-name" id="ti-name">—</div>
+        <div class="ti-sub" id="ti-sub">Start a game</div>
+      </div>
+      <div class="scoreboard">
+        <div class="sb-ttl">PLAYERS</div>
+        <div id="sb-rows"><div style="font-size:10px;color:var(--muted);letter-spacing:2px">No players yet</div></div>
+      </div>
+      <div class="deck-stat">
+        <div class="ds-lbl">ENCOUNTER DECK</div>
+        <div class="ds-bar"><div class="ds-fill" id="ds-fill" style="width:100%"></div></div>
+        <div class="ds-txt" id="ds-txt">— encounters remaining</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif hidden" id="notif"></div>
+
+<!-- DICE ROLL OVERLAY -->
+<div class="dice-ov hidden" id="dice-ov">
+  <div class="dice-panel">
+    <div class="dice-title">MEMORY ROLL</div>
+    <div class="dice-sub" id="dice-sub">Rolling 2d6 for memory card power...</div>
+    <div class="dice-display">
+      <div class="die" id="die1">?</div>
+      <div class="die" id="die2">?</div>
+    </div>
+    <div class="dice-total" id="dice-total">—</div>
+    <div class="dice-total-lbl">TOTAL POWER</div>
+    <button class="btn bl" id="dice-btn" onclick="diceAction()" style="width:100%;font-size:14px;padding:10px">ROLL 2d6</button>
+  </div>
+</div>
+
+<!-- TIEBREAKER -->
+<div class="tie-ov hidden" id="tie-ov">
+  <div class="tie-panel">
+    <div class="tie-title">IT'S A TIE</div>
+    <div class="tie-sub">Equal Power. Each tied player rolls 2d6. Highest roll claims the Spotlight.</div>
+    <div class="tie-rows" id="tie-rows"></div>
+    <button class="btn bo" onclick="rollTiebreaker()" style="width:100%;font-size:14px;padding:10px" id="tie-btn">ROLL 2d6 FOR TIEBREAKER</button>
+  </div>
+</div>
+
+<!-- RESULT MODAL -->
+<div class="res-ov hidden" id="res-ov">
+  <div class="res-panel">
+    <div class="res-top" id="res-top">
+      <div class="res-eye" id="res-eye">ENCOUNTER RESULT</div>
+      <div class="res-title" id="res-title">SUCCESS</div>
+    </div>
+    <div class="res-body">
+      <p class="res-desc" id="res-desc"></p>
+      <div class="res-winner hidden" id="res-winner">
+        <div class="rw-lbl">⭐ SPOTLIGHT — SUCCESS PERK</div>
+        <div class="rw-name" id="rw-name"></div>
+        <div class="rw-card" id="rw-card"></div>
+      </div>
+      <div class="res-winner hidden" id="res-loser" style="border-left-color:var(--red)">
+        <div class="rw-lbl" style="color:var(--red)">💀 WEAKEST PLAYER — FAILURE PENALTY</div>
+        <div class="rw-name" id="rl-name" style="color:var(--red)"></div>
+        <div class="rw-card" id="rl-card"></div>
+      </div>
+      <div class="res-btns" id="res-btns"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FINAL SCORE -->
+<div class="final-ov hidden" id="final-ov">
+  <div class="final-panel">
+    <div class="final-t" id="final-t">STORY ENDS</div>
+    <div class="final-s" id="final-s">"It's probably nothing."</div>
+    <div class="final-tag" id="final-tag">It wasn't.</div>
+    <div class="final-rows" id="final-rows"></div>
+    <button class="btn bl" style="width:100%;font-size:14px;padding:10px" onclick="newGame()">PLAY AGAIN</button>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div class="setup-ov" id="setup-ov">
+  <div class="setup-panel">
+    <div class="setup-logo">IT'S PROBABLY NOTHING</div>
+    <div class="setup-tag">"It wasn't."</div>
+    <div class="setup-sub">A COOPERATIVE STORY CARD GAME — 2 TO 5 PLAYERS</div>
+    <span class="setup-lbl">PLAYER NAMES</span>
+    <div class="pi-rows" id="pi-rows"></div>
+    <button class="btn bb" style="font-size:11px;margin-bottom:4px" onclick="addPlayer()">+ ADD PLAYER</button>
+    <div class="setup-note">
+      <strong>HOW IT WORKS:</strong> Flip an Encounter card and read it aloud. Everyone <strong>must play one card</strong> from their hand — no passing. Cards are revealed simultaneously. The <strong>highest scorer claims the Spotlight</strong>, earns a trophy, and gets the success perk. The <strong>lowest scorer takes the failure penalty</strong>.<br><br>
+      <strong>Memory cards</strong> roll 2d6 to determine their Power — average 7, range 2–12.<br><br>
+      <strong>Ties</strong> are broken by a 2d6 roll — highest result wins.<br><br>
+      <strong>Restricted cards</strong> are shown dimmed — they score 0 and automatically become the weakest play.<br><br>
+      <strong>Run out of cards</strong> and you are out — no refills. Manage your hand.<br><br>
+      <strong>Interference cards</strong> sabotage other players. Playing one uses your entire turn.
+    </div>
+    <div style="margin-top:16px">
+      <button class="btn bl" style="width:100%;font-size:15px;padding:11px" onclick="startGame()">BEGIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- TUTORIAL -->
+<div class="tut-ov hidden" id="tut-ov">
+  <div class="tut-panel">
+    <div class="tut-hdr"><h2>HOW TO PLAY</h2><span class="tut-ctr" id="tut-ctr">1 / 6</span></div>
+    <div class="tut-body" id="tut-body"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// SOUND
+// ============================================================
+let AC=null;
+document.addEventListener('click',()=>{if(!AC)try{AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();}catch(e){}},{once:true});
+function osc(ac,t,f,g,s,d,fe){try{const o=ac.createOscillator(),gn=ac.createGain();o.connect(gn);gn.connect(ac.destination);o.type=t;o.frequency.setValueAtTime(f,ac.currentTime+s);if(fe!==undefined)o.frequency.linearRampToValueAtTime(fe,ac.currentTime+s+d);gn.gain.setValueAtTime(g,ac.currentTime+s);gn.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+s+d);o.start(ac.currentTime+s);o.stop(ac.currentTime+s+d+0.02);}catch(e){}}
+function nz(ac,g,s,d,ff){try{const b=ac.createBuffer(1,ac.sampleRate*d,ac.sampleRate),dt=b.getChannelData(0);for(let i=0;i<dt.length;i++)dt[i]=Math.random()*2-1;const src=ac.createBufferSource(),f=ac.createBiquadFilter(),gn=ac.createGain();f.type='bandpass';f.frequency.value=ff||800;f.Q.value=1.5;gn.gain.setValueAtTime(g,ac.currentTime+s);gn.gain.exponentialRampToValueAtTime(0.001,ac.currentTime+s+d);src.connect(f);f.connect(gn);gn.connect(ac.destination);src.buffer=b;src.start(ac.currentTime+s);src.stop(ac.currentTime+s+d+0.02);}catch(e){}}
+const SFX={
+  flip:()=>{if(!AC)return;nz(AC,.12,0,.1,1200);osc(AC,'sine',180,.06,0,.18,100);},
+  play:()=>{if(!AC)return;osc(AC,'sine',120,.25,0,.18,70);nz(AC,.15,0,.1,500);},
+  interference:()=>{if(!AC)return;osc(AC,'sawtooth',300,.2,0,.15,100);nz(AC,.2,0,.2,800);},
+  trophy:()=>{if(!AC)return;[330,440,550].forEach((f,i)=>osc(AC,'sine',f,.15,i*.07,.5));},
+  fail:()=>{if(!AC)return;osc(AC,'sawtooth',180,.2,0,.35,50);nz(AC,.12,0,.25,300);},
+  boss:()=>{if(!AC)return;osc(AC,'sawtooth',60,.35,0,.9,30);nz(AC,.2,0,.7,200);},
+  dice:()=>{if(!AC)return;nz(AC,.25,0,.18,2000);osc(AC,'sine',500,.15,0,.1,200);osc(AC,'sine',300,.1,.08,.15,400);},
+  win:()=>{if(!AC)return;[220,277,330,440,550].forEach((f,i)=>osc(AC,'sine',f,.18,i*.09,.8));},
+  click:()=>{if(!AC)return;osc(AC,'sine',500,.05,0,.04,250);},
+};
+
+// ============================================================
+// TUTORIAL
+// ============================================================
+const TUTS=[
+{t:'Welcome',r:()=>`
+<p class="tut-p">You are credible witnesses. Whatever is happening — the lights, the sounds, the things at the door — it is probably nothing. It is definitely not nothing.</p>
+<p class="tut-p"><strong>It's Probably Nothing</strong> is a cooperative story card game for 2–5 players. Together you face a series of Encounters. You compete individually for the <strong>Spotlight</strong> — <strong>first player to 5 trophies wins immediately.</strong></p>
+<div class="tut-tip">No HP bars. No tokens. First to 5 trophies ends the game on the spot.</div>`},
+{t:'The Encounter Card',r:()=>`
+<p class="tut-p">Each turn one Encounter card is flipped. Read it aloud. This is what's happening to your group right now.</p>
+<div class="tut-ann"><div class="dot"></div><div class="at"><strong>Challenge</strong> — what card type and Power is needed to resolve this encounter.</div></div>
+<div class="tut-ann"><div class="dot"></div><div class="at"><strong>Perfect Match</strong> — one specific card wins automatically, no competition needed.</div></div>
+<div class="tut-ann"><div class="dot"></div><div class="at"><strong>Difficulty badge</strong> — Easy, Moderate, Hard, or Brutal. Plan accordingly.</div></div>
+<div class="tut-ann"><div class="dot"></div><div class="at"><strong>Success / Failure</strong> — what happens based on the result.</div></div>
+<div class="tut-tip">Perfect Match wins are rare. When someone plays one, the table reacts. That's the point.</div>`},
+{t:'Memory Cards & Dice',r:()=>`
+<p class="tut-p">Most cards have a fixed Power. <strong>Memory cards are different</strong> — when you play one, you roll 2d6 to reveal its Power.</p>
+<div class="tut-box">
+  <div class="tt">2d6 RANGE</div>
+  <div class="tb">Minimum: <span>2</span> &nbsp;·&nbsp; Average: <span>7</span> &nbsp;·&nbsp; Maximum: <span>12</span><br><br>A Memory card could be the weakest thing on the table or the strongest. You never know until you roll. That's the point — <span>memory is unreliable.</span></div>
+</div>
+<p class="tut-p">The dice roll happens automatically in this demo. In physical play, the player rolls two d6 dice when their Memory card is revealed.</p>
+<div class="tut-tip">Memory cards have an average of 7 — higher than most fixed cards. Gambling on one is often worth it.</div>`},
+{t:'Winning the Spotlight',r:()=>`
+<p class="tut-p">Everyone secretly picks one card and reveals simultaneously. The winner is determined in order:</p>
+<div class="tut-box">
+  <div class="tt">SPOTLIGHT RULES</div>
+  <div class="tb">
+    1. <span>Perfect Match</span> — automatic win, no competition<br>
+    2. <span>Category match</span> — correct card type beats everything<br>
+    3. <span>Power rating</span> — higher power wins ties within same type<br>
+    4. <span>Any card beats passing</span> — highest power if no type match<br>
+    5. <span>Tie → roll 2d6</span> — both tied players roll, highest wins
+  </div>
+</div>
+<div class="tut-tip">Run out of cards and you are eliminated. Manage your hand — every card spent matters.</div>`},
+{t:'Interference Cards',r:()=>`
+<p class="tut-p"><strong>Interference cards</strong> are sabotage. Play them against other players to disrupt their Spotlight, reduce their Power, or force re-rolls.</p>
+<div class="tut-ann"><div class="dot"></div><div class="at">No Power rating — they don't help you win the Spotlight</div></div>
+<div class="tut-ann"><div class="dot"></div><div class="at">Playing one uses your entire turn — no regular card that round</div></div>
+<div class="tut-ann"><div class="dot"></div><div class="at">Only 1 per player at a time — pass extras face-down to someone else</div></div>
+<div class="tut-tip">Interference cards are rare. They should feel surprising and a little mean. That's correct.</div>`},
+{t:'Your Turn',r:()=>`
+<p class="tut-p">Each round follows this order:</p>
+<div class="tut-ann" style="margin-bottom:10px"><div class="dot" style="background:var(--blue);margin-top:6px"></div><div class="at" style="font-size:12px"><strong>1. FLIP</strong> — Encounter card flips automatically each round.</div></div>
+<div class="tut-ann" style="margin-bottom:10px"><div class="dot" style="background:var(--orange);margin-top:6px"></div><div class="at" style="font-size:12px"><strong>2. CHOOSE</strong> — Click a card in your hand to select it.</div></div>
+<div class="tut-ann" style="margin-bottom:10px"><div class="dot" style="background:var(--green);margin-top:6px"></div><div class="at" style="font-size:12px"><strong>3. PLAY / PASS</strong> — Click Play Card or Pass. Memory cards trigger a dice roll.</div></div>
+<div class="tut-ann" style="margin-bottom:14px"><div class="dot" style="background:var(--muted);margin-top:6px"></div><div class="at" style="font-size:12px"><strong>4. RESOLVE</strong> — After all players play, winner is determined automatically.</div></div>
+<div style="text-align:center;margin-top:8px">
+  <button class="btn bl" style="font-size:14px;padding:9px 22px" onclick="closeTut()">LET'S GO</button>
+</div>`},
+];
+let tStep=0;
+function showTut(s){tStep=s;renderTut();document.getElementById('tut-ov').classList.remove('hidden');}
+function closeTut(){document.getElementById('tut-ov').classList.add('hidden');}
+function tutNav(d){tStep=Math.max(0,Math.min(TUTS.length-1,tStep+d));renderTut();}
+function renderTut(){
+  const s=TUTS[tStep];
+  document.getElementById('tut-ctr').textContent=`${tStep+1} / ${TUTS.length}`;
+  const dots=TUTS.map((_,i)=>`<div class="tdot${i===tStep?' act':i<tStep?' dn':''}"></div>`).join('');
+  document.getElementById('tut-body').innerHTML=`<div class="tut-t">${s.t}</div>${s.r()}<div class="tut-nav"><button class="btn bb" onclick="tutNav(-1)" ${tStep===0?'disabled':''}>← BACK</button><div class="tprog">${dots}</div>${tStep<TUTS.length-1?`<button class="btn bb" onclick="tutNav(1)">NEXT →</button>`:`<button class="btn bb" onclick="closeTut()">CLOSE ✓</button>`}</div>`;
+}
+
+// ============================================================
+// CARD DATA
+// ============================================================
+// ============================================================
+// PLAYER CARDS — 84 total (14 per category)
+// Power scale: 1-2 easy, 3-4 moderate, 5-6 strong, 7-8 expert, 9-10 legendary
+// ============================================================
+const WEAPONS=[
+  {id:'rifle',name:'Hunting Rifle',type:'weapon',power:6,flavor:'Reliable. Loud. Works on most things.',effect:'Strong general weapon. Perfect Match for treeline and creature encounters.'},
+  {id:'shotgun',name:'Shotgun',type:'weapon',power:9,flavor:'Closest thing to a universal answer.',effect:'Highest power weapon. Perfect Match for brutal encounters.'},
+  {id:'salt',name:'Salt Round',type:'weapon',power:5,flavor:'Loaded specifically for this.',effect:'Perfect Match for ghost, spirit, and shadow encounters.'},
+  {id:'iron',name:'Iron Nails',type:'weapon',power:7,flavor:'Cold iron. Older than most of what you\'re dealing with.',effect:'Perfect Match for threshold-crossing entities. Wendigo encounter.'},
+  {id:'flare',name:'Flare Gun',type:'weapon',power:5,flavor:'Light is the answer more often than you\'d think.',effect:'Perfect Match for any encounter where light drives something back.'},
+  {id:'knife',name:'Hunting Knife',type:'weapon',power:3,flavor:'Never leaves your belt.',effect:'Low power but always in hand. Wins easy weapon encounters.'},
+  {id:'silver',name:'Silver Round',type:'weapon',power:6,flavor:'Expensive. Worth it for the right situation.',effect:'Perfect Match for shapeshifter and Skinwalker encounters.'},
+  {id:'crossbow',name:'Crossbow',type:'weapon',power:4,flavor:'Silent. Precise. They don\'t hear you coming.',effect:'Moderate power. Good for stealth encounters.'},
+  {id:'beartrap',name:'Bear Trap',type:'weapon',power:3,flavor:'Set it. Walk away. Come back in the morning.',effect:'Power 3. Slow but reliable. Good for wilderness encounters.'},
+  {id:'axe',name:'Woodsman\'s Axe',type:'weapon',power:5,flavor:'Found it in the cabin. Previous owner didn\'t need it anymore.',effect:'Power 5. Strong physical response. Wins moderate weapon encounters.'},
+  {id:'molotov',name:'Molotov Cocktail',type:'weapon',power:6,flavor:'You\'re not proud of it. It worked though.',effect:'Power 6. Fire-based. Perfect for encounters where something needs to burn.'},
+  {id:'taser',name:'Cattle Prod',type:'weapon',power:4,flavor:'Government issue. Found in a shed. Better not to ask.',effect:'Power 4. Non-lethal. Useful when you need to not start an incident.'},
+  {id:'machete',name:'Machete',type:'weapon',power:4,flavor:'Bought at a gas station. No questions asked.',effect:'Power 4. Versatile. Goes well with most wilderness encounters.'},
+  {id:'wiresnare',name:'Wire Snare',type:'weapon',power:2,flavor:'Old poacher\'s trick. Works on things that move like animals.',effect:'Power 2. Weakest weapon. But it scores 0 if sacrificed, better than nothing.'},
+];
+
+const ARTIFACTS=[
+  {id:'mirror',name:'Cracked Mirror',type:'artifact',power:4,flavor:'The crack changes what it shows.',effect:'Perfect Match for mirror and reflection encounters.'},
+  {id:'compass',name:'Compass (Broken)',type:'artifact',power:3,flavor:'Points somewhere. Not north. That\'s useful.',effect:'Perfect Match for navigation and disorientation encounters.'},
+  {id:'watch',name:'Pocket Watch (Stopped)',type:'artifact',power:6,flavor:'Stopped at the exact right moment.',effect:'Perfect Match for time distortion and missing time encounters.'},
+  {id:'foot',name:"Rabbit's Foot",type:'artifact',power:2,flavor:'Lucky for you. Not for everything else.',effect:'Once per game: turn a failure penalty into draw 1 card instead.'},
+  {id:'candle',name:'Séance Candle',type:'artifact',power:7,flavor:'Black wax. Burns cold.',effect:'Perfect Match for encounters requiring communication with the dead.'},
+  {id:'jammer',name:'Signal Jammer',type:'artifact',power:6,flavor:'Blocks frequencies you didn\'t know existed.',effect:'Perfect Match for transmissions, signals, and extraterrestrial encounters.'},
+  {id:'jar',name:'The Jar',type:'artifact',power:3,flavor:'Something is inside. Do not open it.',effect:'Once per game: nobody takes the failure penalty this round. The Jar absorbs it.'},
+  {id:'skull',name:'Crystal Skull',type:'artifact',power:8,flavor:'Not from a gift shop. Obviously.',effect:'Highest power artifact. Wins extraterrestrial and psychic encounters.'},
+  {id:'locket',name:'Haunted Locket',type:'artifact',power:5,flavor:'The portrait inside is smiling now. It wasn\'t when you found it.',effect:'Power 5. Strong paranormal artifact. Wins ghost and spirit encounters.'},
+  {id:'coin',name:'Cursed Coin',type:'artifact',power:4,flavor:'Keeps coming back. You\'ve thrown it away three times.',effect:'If discarded as a penalty, return it to your hand next round. It doesn\'t want to leave.'},
+  {id:'map',name:'Old Map',type:'artifact',power:3,flavor:'The roads on here don\'t match any map you can find.',effect:'Perfect Match for encounters involving locations that shouldn\'t exist.'},
+  {id:'hexbag',name:'Hex Bag',type:'artifact',power:4,flavor:'Smells like swamp and something older.',effect:'Power 4. Wins curse and folklore encounters. Protects against hex-based penalties.'},
+  {id:'bone',name:'Carved Bone',type:'artifact',power:5,flavor:'Not an animal. Not a person. Something in between.',effect:'Power 5. Strong cryptid artifact. Wins encounters involving creature communication.'},
+  {id:'prism',name:'Shattered Prism',type:'artifact',power:2,flavor:'It shows things that aren\'t there. Or things that are.',effect:'Power 2. Low power but reveals the Perfect Match card on any encounter when played.'},
+];
+
+const TOOLS=[
+  {id:'evp',name:'EVP Recorder',type:'tool',power:4,flavor:'Picks up things the human ear can\'t.',effect:'Perfect Match for audio evidence and paranormal communication.'},
+  {id:'camera',name:'Trail Camera',type:'tool',power:3,flavor:'Motion activated. Infrared. Left running all night.',effect:'Perfect Match for surveillance and photographic evidence encounters.'},
+  {id:'emf',name:'EMF Reader',type:'tool',power:3,flavor:'When it goes crazy, something is close.',effect:'Wins detection encounters. Moderate power.'},
+  {id:'nvg',name:'Night Vision Goggles',type:'tool',power:6,flavor:'Green world. Everything hidden is visible.',effect:'Perfect Match for visibility-based encounters.'},
+  {id:'scanner',name:'Police Scanner',type:'tool',power:4,flavor:'You hear about things before the news does.',effect:'Perfect Match for cover-up and advance warning encounters.'},
+  {id:'torch',name:'Flashlight',type:'tool',power:2,flavor:'Simple. Reliable. Light in the dark.',effect:'Low power. Perfect Match for the Cabin. Wins easy light-based encounters.'},
+  {id:'gasmask',name:'Gas Mask',type:'tool',power:5,flavor:'Sulfur, gas, whatever they breathe out.',effect:'Perfect Match for Flatwoods Monster and toxic encounters.'},
+  {id:'burner',name:'Burner Phone',type:'tool',power:4,flavor:'No name. No history. Untraceable.',effect:'Perfect Match for surveillance and tracking encounters.'},
+  {id:'geigercount',name:'Geiger Counter',type:'tool',power:4,flavor:'It\'s been clicking since you crossed the county line.',effect:'Power 4. Wins radiation, contamination, and extraterrestrial technology encounters.'},
+  {id:'dashcam',name:'Dash Cam',type:'tool',power:3,flavor:'Caught something on the drive out here. Haven\'t watched it back yet.',effect:'Power 3. Wins any encounter requiring video evidence. Automatic documentation.'},
+  {id:'firstaid',name:'First Aid Kit',type:'tool',power:2,flavor:'For after.',effect:'Power 2. When played, cancel the failure penalty for yourself regardless of round result.'},
+  {id:'rope',name:'Rope and Grapple',type:'tool',power:3,flavor:'Sometimes you just need to get somewhere.',effect:'Power 3. Wins encounters requiring physical access to difficult locations.'},
+  {id:'drone',name:'Surveillance Drone',type:'tool',power:6,flavor:'You can see everything from up here. Including things that see you back.',effect:'Power 6. Strong tool. Wins investigation and surveillance encounters.'},
+  {id:'shortwave',name:'Shortwave Radio',type:'tool',power:5,flavor:'Gets frequencies the internet doesn\'t know about.',effect:'Power 5. Wins communication and signal-based encounters. Pairs well with EVP Recorder.'},
+];
+
+const INSTINCT=[
+  {id:'veteran',name:"Veteran's Instinct",type:'instinct',power:9,flavor:"You've been here before. Not here specifically.",effect:'Highest power instinct. Perfect Match for Night Shift, Mothman, and First Contact.'},
+  {id:'bad',name:'Bad Feeling',type:'instinct',power:5,flavor:'The hair on the back of your neck has been right before.',effect:'Play openly to lower challenge threshold by 2 for all players this round.'},
+  {id:'fof',name:'Fight or Flight',type:'instinct',power:7,flavor:'Your body decided before your brain did.',effect:'Wins high-adrenaline and speed-of-reaction encounters.'},
+  {id:'local',name:'Local Knowledge',type:'instinct',power:4,flavor:'You grew up here. You know what to avoid.',effect:'Wins familiar location encounters. Strong in rural and urban legend categories.'},
+  {id:'pattern',name:'Pattern Recognition',type:'instinct',power:6,flavor:"You've been seeing the same things in different places.",effect:'Strong general instinct. Wins investigation-type encounters.'},
+  {id:'steady',name:'Steady Hands',type:'instinct',power:4,flavor:'When everything goes wrong you go quiet.',effect:'Wins precision and high-pressure encounters.'},
+  {id:'trust',name:'Trust Nobody',type:'instinct',power:3,flavor:"It's kept you alive this far.",effect:'Wins encounters involving deception and false appearances.'},
+  {id:'rightcall',name:'The Right Call',type:'instinct',power:5,flavor:'You made a decision. You still think it was right.',effect:'Once per game: reverse a group failure into a success. No Spotlight awarded, no penalty taken.'},
+  {id:'gut',name:'Pure Gut',type:'instinct',power:6,flavor:'No evidence. No logic. Just absolutely certain.',effect:'Power 6. Wins any encounter where hesitation would be worse than being wrong.'},
+  {id:'survivor',name:'Survivor\'s Edge',type:'instinct',power:5,flavor:'You\'ve been in worse situations. Probably.',effect:'Power 5. If you take the failure penalty this round, draw 1 card back automatically.'},
+  {id:'deception',name:'Practiced Deception',type:'instinct',power:4,flavor:'You\'ve been lying about what you\'ve seen for years.',effect:'Power 4. Wins encounters involving blending in or staying under the radar.'},
+  {id:'freeze',name:'Don\'t Move',type:'instinct',power:3,flavor:'Sometimes the best move is nothing at all.',effect:'Power 3. If this is the weakest card played, the failure penalty is halved.'},
+  {id:'sixth',name:'Sixth Sense',type:'instinct',power:7,flavor:'You knew before you opened the door.',effect:'Power 7. Strong instinct. Wins perception and awareness encounters.'},
+  {id:'muscle',name:'Muscle Memory',type:'instinct',power:5,flavor:'You did this in training. Your hands remember.',effect:'Power 5. Counts as a Weapon card for scoring purposes in weapon-required encounters.'},
+];
+
+// Memory cards roll 2d6 on reveal — dice:true, no fixed power
+const MEMORY=[
+  {id:'notes',name:'Field Notes',type:'memory',dice:true,flavor:"You've been writing everything down since the beginning.",effect:'Roll 2d6. Perfect Match for Cornfield and Documents encounters.'},
+  {id:'legend',name:'Family Legend',type:'memory',dice:true,flavor:'Your grandmother told you about this. You thought it was a story.',effect:'Roll 2d6. Perfect Match for local folklore and rural mythology encounters.'},
+  {id:'seen',name:'Seen One Before',type:'memory',dice:true,flavor:'Different location. Same feeling.',effect:'Roll 2d6. Perfect Match for Cryptid encounters. High roll wins any creature encounter.'},
+  {id:'lasttime',name:'The Last Time',type:'memory',dice:true,flavor:'You survived it once. You know what worked.',effect:'Roll 2d6. On a result of 10+ draw 1 extra card regardless of Spotlight result.'},
+  {id:'read',name:'Read About This',type:'memory',dice:true,flavor:'The library had three books on it. You read all three.',effect:'Roll 2d6. Wins paranormal and conspiracy encounters on a roll of 5+.'},
+  {id:'photo',name:'Old Photograph',type:'memory',dice:true,flavor:'Found in a drawer. Someone looking at something off-camera.',effect:'Roll 2d6. Perfect Match for historical event and missing persons encounters.'},
+  {id:'warning',name:'The Warning',type:'memory',dice:true,flavor:'Someone tried to tell you. You\'re starting to understand.',effect:'Roll 2d6. On any result preview the next encounter card before playing.'},
+  {id:'sound',name:'I Know This Sound',type:'memory',dice:true,flavor:'Heard it before. Knew to run then too.',effect:'Roll 2d6. Wins audio and paranormal communication encounters on a roll of 4+.'},
+  {id:'dream',name:'The Dream',type:'memory',dice:true,flavor:'Three nights in a row. Always the same image.',effect:'Roll 2d6. On a result of 8+ reveal the Perfect Match card for the current encounter.'},
+  {id:'article',name:'The Newspaper Article',type:'memory',dice:true,flavor:'Published 1987. Everything in it has already happened.',effect:'Roll 2d6. Wins conspiracy and cover-up encounters on any roll. Historical context.'},
+  {id:'faces',name:'Never Forget a Face',type:'memory',dice:true,flavor:'Even when the face is wrong.',effect:'Roll 2d6. Perfect Match for disguise, shapeshifter, and false identity encounters.'},
+  {id:'route',name:'Knows the Back Roads',type:'memory',dice:true,flavor:'Spent a summer here once. Enough to know the roads that aren\'t on maps.',effect:'Roll 2d6. Wins wilderness and rural encounters on a roll of 4+.'},
+  {id:'name',name:'A Name in Your Head',type:'memory',dice:true,flavor:'You don\'t know why you know it. But you do.',effect:'Roll 2d6. On any roll of doubles draw 2 extra cards — the name means something.'},
+  {id:'almanac',name:'The Old Almanac',type:'memory',dice:true,flavor:'Published before the county existed. Somehow completely accurate.',effect:'Roll 2d6. If this is your lowest roll this game, it counts as 12 instead — some knowledge is always relevant.'},
+];
+
+const INTERFERENCE=[
+  {id:'blowcover',name:'Blow the Cover',type:'interference',flavor:'You said the wrong thing at exactly the wrong moment.',effect:'Target player reveals their card before the group reveal. They lose 3 Power this round.'},
+  {id:'badintel',name:'Bad Intel',type:'interference',flavor:'You fed them wrong information. They acted on it.',effect:'Name a card category. All players who played that type lose 4 Power this round.'},
+  {id:'panic',name:'Panic',type:'interference',flavor:"You ran. You don't blame them. But it cost everyone.",effect:"Target player's card does not count toward group Power total this round."},
+  {id:'wrongtool',name:'Wrong Tool',type:'interference',flavor:'You swapped it while they weren\'t looking.',effect:"Target player's Weapon or Tool card Power is reduced to 1 this round."},
+  {id:'skeptic',name:'Skeptic',type:'interference',flavor:'You talked them out of believing it.',effect:'Force a Memory card player to re-roll their 2d6 and take the lower result.'},
+  {id:'looselips',name:'Loose Lips',type:'interference',flavor:'They told everyone what they had.',effect:'Target player must reveal their entire hand to all players before choosing a card.'},
+  {id:'distraction',name:'The Distraction',type:'interference',flavor:'Something in the other direction. Very convincing.',effect:'Target player\'s card is discarded with no effect. They draw 1 replacement but cannot play it this round.'},
+  {id:'tooclever',name:'Too Clever',type:'interference',flavor:'Their plan was elegant. It was also completely wrong.',effect:"Current Spotlight winner's Power is halved (round down). If this drops them to second, Spotlight transfers."},
+  {id:'oldgrudge',name:'Old Grudge',type:'interference',flavor:'You\'ve been waiting for exactly this moment.',effect:'Target player\'s most recent trophy is contested — it doesn\'t count toward the win condition this round. Resolved at table.'},
+  {id:'yoink',name:'That\'s Mine Actually',type:'interference',flavor:'You saw it first.',effect:'If target player wins the Spotlight this round, you draw their success perk cards instead of them.'},
+  {id:'muddywater',name:'Muddy the Water',type:'interference',flavor:'By the time anyone figured out what happened, you were gone.',effect:'Remove the Perfect Match condition from the current encounter. Nobody gets the automatic win this round.'},
+  {id:'butterfingers',name:'Butterfingers',type:'interference',flavor:'The look on their face was worth it.',effect:'Target player must discard their highest Power card from hand immediately, before choosing what to play.'},
+  {id:'nowyouknow',name:'Now You Know',type:'interference',flavor:'Sharing is caring.',effect:'Reveal your own hand to all players. In exchange, all restrictions on the current encounter are lifted for you only this round.'},
+  {id:'redirect',name:'Redirect',type:'interference',flavor:'You pointed. They looked.',effect:'Move the failure penalty from the weakest player to the second-weakest player this round. You are immune regardless of your score.'},
+];
+
+// ============================================================
+// ENCOUNTERS
+// penaltyType: 'discard_count' | 'lose_weapons' | 'lose_memory' | 'lose_tools'
+//              | 'lose_artifacts' | 'lose_highest' | 'discard_to_3' | 'skip_next'
+// perkType:    'draw_count' | 'draw_best_2' | 'preview_next' | 'steal_card'
+// ============================================================
+const ENCOUNTERS=[
+  // ── EASY ────────────────────────────────────────────────────
+  {id:'pogs_enc',title:'The Pog Championship of 1996',cat:'WEIRD & WILD',boss:false,diff:'EASY',threshold:2,
+   restrict:[],restrictLabel:'OPEN — ANY CARD',
+   situation:"You found a sealed box of Pogs in the wall of a house built in 1892. One of them has your face on it. The date on the back is next Tuesday.",
+   challenge:'Any card Power 2+. Weird, but not dangerous.',pm:'Family Legend',
+   success:'You figured it out in time. Draw 2 cards — the Pogs were a gift.',
+   perkType:'draw_count',perkCount:2,
+   failure:"You weren't ready. You lose 1 card. The Pog Champion is disappointed in you.",
+   penaltyType:'discard_count',penaltyCount:1,
+   pmId:'legend'},
+
+  {id:'static',title:'The Static Between Stations',cat:'PARANORMAL',boss:false,diff:'EASY',threshold:3,
+   restrict:['weapon'],restrictLabel:'NOT WEAPONS — you can\'t shoot a radio signal',
+   situation:"Late at night between radio stations there's something in the static. It's been there for weeks. Tonight it said your name.",
+   challenge:'Tool (Power 3+) or Memory (any roll). No weapons.',pm:'EVP Recorder',
+   success:"You decoded part of the message. It wasn't meant for you. Draw 2 cards and peek at the next encounter.",
+   perkType:'draw_and_preview',perkCount:2,
+   failure:"The signal overwrote your memory. Lose all your Memory cards — you can't remember anything useful.",
+   penaltyType:'lose_memory',
+   pmId:'evp'},
+
+  {id:'algorithm_enc',title:'The Algorithm Knows',cat:'WEIRD & WILD',boss:false,diff:'EASY',threshold:3,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — this isn\'t a physical problem',
+   situation:"Your phone started showing ads for things you'd only thought about. Then: WE KNOW WHAT YOU ARE LOOKING FOR.",
+   challenge:'Tool (Power 3+) or Artifact. Weapons and instinct won\'t help here.',pm:'Burner Phone',
+   success:'You went dark. It lost you. Draw 1 card — your countermeasures worked.',
+   perkType:'draw_count',perkCount:1,
+   failure:"It has your location now. Lose all your Tool cards — your kit just became a tracking device and you binned it.",
+   penaltyType:'lose_tools',
+   pmId:'burner'},
+
+  // ── MODERATE ────────────────────────────────────────────────
+  {id:'cornfield',title:'The Cornfield at 3am',cat:'WILDERNESS',boss:false,diff:'MODERATE',threshold:4,
+   restrict:[],restrictLabel:'OPEN — any approach works out here',
+   situation:"Twelve crop circles appeared overnight. The farmer isn't talking. There's a humming that hasn't stopped in four days. You're standing at the edge of the field.",
+   challenge:'Any card Power 4+. Memory (roll 5+).',pm:'Field Notes',
+   success:'You documented everything before dawn. Draw 2 cards — this is your best evidence yet.',
+   perkType:'draw_count',perkCount:2,
+   failure:"The humming got inside your head. Lose all your Memory cards — whatever you knew out here, you've forgotten it.",
+   penaltyType:'lose_memory',
+   pmId:'notes'},
+
+  {id:'motel',title:'The Motel on Route 9',cat:'URBAN LEGEND',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['weapon'],restrictLabel:'NOT WEAPONS — you\'re in a motel, not a firefight',
+   situation:"Room 7 has been rented to the same guest for eleven years. The name in the ledger changes but the handwriting is identical. Tonight the door is open.",
+   challenge:'Tool (Power 4+) or Memory (roll 4+). Leave the weapons in the car.',pm:'EVP Recorder',
+   success:'You found something in room 7. Draw 1 card and steal 1 card from any other player — you know their secrets now too.',
+   perkType:'draw_and_steal',perkCount:1,
+   failure:"Something followed you back to your room. Lose your highest Power card — it took the best thing you had.",
+   penaltyType:'lose_highest',
+   pmId:'evp'},
+
+  {id:'cabin',title:"What's in the Cabin",cat:'INVESTIGATION',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['memory'],restrictLabel:'NOT MEMORY — you can\'t remember your way through a locked door',
+   situation:"The cabin has been empty for six years. Three families tried to rent it. All left within a week. The lights are on tonight.",
+   challenge:'Weapon (Power 4+) or Tool (Power 4+). Memory cards won\'t open that door.',pm:'Flashlight',
+   success:'You went in. You came out. You also grabbed something useful. Draw 2 cards.',
+   perkType:'draw_count',perkCount:2,
+   failure:"You dropped your whole kit running out of there. Lose all your Tool cards — your toolbox is still on the porch of that cabin.",
+   penaltyType:'lose_tools',
+   pmId:'torch'},
+
+  {id:'gasstation_enc',title:'Night Shift',cat:'EVERYDAY HORROR',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['weapon','artifact'],restrictLabel:'NOT WEAPONS OR ARTIFACTS — you\'d just look crazy',
+   situation:"The gas station on the edge of town is open at 3am. A man has been sitting in the parking lot since before you arrived. The attendant says he's been there for three nights.",
+   challenge:'Instinct (Power 4+) or Memory (roll 4+). Weapons would just cause a scene.',pm:"Veteran's Instinct",
+   success:'The attendant gave you something. Draw 1 card and peek at the next encounter — you know what\'s coming.',
+   perkType:'draw_and_preview',perkCount:1,
+   failure:"The man in the parking lot followed you. Skip your next turn — you spent it losing him in the dark.",
+   penaltyType:'skip_next',
+   pmId:'veteran'},
+
+  {id:'broadcast',title:'Broadcast Interruption',cat:'PARANORMAL',boss:false,diff:'MODERATE',threshold:5,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — technical problems need technical solutions',
+   situation:'Every screen in town showed the same image for 47 seconds at 3:17am. Nobody recorded it. The anchor looked wrong.',
+   challenge:'Tool (Power 4+) or Artifact (Power 5+). This is a signal problem.',pm:'Signal Jammer',
+   success:'You traced the signal. Draw 2 cards — your equipment captured something nobody else got.',
+   perkType:'draw_count',perkCount:2,
+   failure:"The signal fried your gear. Lose all your Tool cards — your equipment is just expensive paperweights now.",
+   penaltyType:'lose_tools',
+   pmId:'jammer'},
+
+  // ── HARD ────────────────────────────────────────────────────
+  {id:'treeline',title:'Something at the Treeline',cat:'WILDERNESS',boss:false,diff:'HARD',threshold:6,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — your camera means nothing to this thing',
+   situation:"You've been parked at the trailhead for twenty minutes. The ranger hasn't come back. Something at the edge of the tree line keeps moving when you look away.",
+   challenge:'Weapon (Power 6+) or Instinct (Power 6+). Raw power or raw nerve.',pm:'Hunting Rifle',
+   success:"It decided you weren't worth the trouble. Draw 2 cards — you held your ground and it respected that.",
+   perkType:'draw_count',perkCount:2,
+   failure:"You panicked and threw everything at it. Lose all your Weapon cards — they're somewhere in the dark at the tree line.",
+   penaltyType:'lose_weapons',
+   pmId:'rifle'},
+
+  {id:'documents',title:'The Leaked Documents',cat:'CONSPIRACY',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon','tool'],restrictLabel:'NOT WEAPONS OR TOOLS — you can\'t shoot a paper trail',
+   situation:"Someone left a folder in your car. CLASSIFIED stamped in four places. Thirty years of cover-up. Two pages are missing.",
+   challenge:'Memory (roll 6+) or Instinct only. Knowledge and nerve — nothing else.',pm:'Field Notes',
+   success:'You made copies before they came for the folder. Draw 3 cards — this is the find of a lifetime.',
+   perkType:'draw_count',perkCount:3,
+   failure:"They got to you before you could read it. Lose all your Memory cards — whatever you learned from that folder is gone.",
+   penaltyType:'lose_memory',
+   pmId:'notes'},
+
+  {id:'mirror_enc',title:'The Mirror in the Hallway',cat:'PARANORMAL',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon','tool','instinct'],restrictLabel:'ARTIFACTS OR MEMORY ONLY — you can\'t fight what isn\'t there',
+   situation:"The previous owners left one thing behind — a full-length mirror. Except for the figure standing behind you that isn't there when you turn around.",
+   challenge:'Artifact or Memory ONLY. Weapons and instinct are useless against reflections.',pm:'Cracked Mirror',
+   success:'You covered it and the reflections stopped. Draw 1 card and steal 1 from another player — you took something from both worlds.',
+   perkType:'draw_and_steal',perkCount:1,
+   failure:"It took something from you through the glass. Lose all your Artifact cards — whatever strange things you were carrying, they belong to it now.",
+   penaltyType:'lose_artifacts',
+   pmId:'mirror'},
+
+  {id:'mothman_enc',title:'The Mothman Warning',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:7,
+   restrict:['weapon','tool','artifact'],restrictLabel:'INSTINCT OR MEMORY ONLY — Mothman warns. It doesn\'t fight.',
+   situation:"A massive winged figure has been spotted at every major incident in the county this month. Tonight it's sitting on your roof. It's watching something you can't see.",
+   challenge:'Instinct or Memory ONLY. It came to warn you, not fight. Pay attention.',pm:"Veteran's Instinct",
+   success:'You understood the warning. Draw 2 cards and peek at the next encounter — Mothman just saved your life.',
+   perkType:'draw_and_preview',perkCount:2,
+   failure:"You didn't listen. Discard down to 3 cards — you spent the next two hours panicking instead of preparing.",
+   penaltyType:'discard_to_3',
+   pmId:'veteran'},
+
+  {id:'grey_enc',title:'First Contact',cat:'EXTRATERRESTRIAL',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon'],restrictLabel:'NOT WEAPONS — shooting it would be the worst possible idea',
+   situation:"It was standing in the kitchen when you came downstairs. Small. Grey. Enormous eyes. It's been three minutes. Neither of you has moved.",
+   challenge:'Instinct (Power 6+), Tool, Artifact, or Memory. Whatever you do — no weapons.',pm:"Veteran's Instinct",
+   success:'You communicated something. It left you a gift. Draw 3 cards — it wanted you to be prepared.',
+   perkType:'draw_count',perkCount:3,
+   failure:"You moved first. It wasn't pleased. Lose all your Memory cards — your recollection of the last six hours has been edited.",
+   penaltyType:'lose_memory',
+   pmId:'veteran'},
+
+  // ── BRUTAL ──────────────────────────────────────────────────
+  {id:'skinwalker_enc',title:"The Neighbor That Isn't",cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:8,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — everything else is a social call',
+   situation:"Your neighbor has been acting differently for three days. Wrong gait. Eyes that catch the light wrong. Last night their silhouette had too many joints.",
+   challenge:'Weapon (Power 8+) or Instinct (Power 8+) ONLY. This needs force or nerve.',pm:'Silver Round',
+   success:"You kept your distance. It moved on. Draw 2 cards and steal 1 from another player — good instincts deserve a reward.",
+   perkType:'draw_and_steal',perkCount:2,
+   failure:"It got close enough to look at you properly. Lose all your Weapon cards — it took every dangerous thing you were carrying.",
+   penaltyType:'lose_weapons',
+   pmId:'silver'},
+
+  {id:'wendigo_enc',title:'The Wendigo in the Storm',cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:8,
+   restrict:['tool','memory','artifact','instinct'],restrictLabel:'WEAPONS ONLY — there is no other way through this',
+   situation:"The blizzard has trapped you in the cabin for three days. The food ran out on day two. Something has been circling since nightfall. It sounds like it used to be a person.",
+   challenge:'WEAPONS ONLY. Power 8+. Nothing else will hold it at the door.',pm:'Iron Nails',
+   success:"It couldn't cross the threshold. Morning came. Draw 2 cards — you survived the night.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The door didn't hold. Discard down to 3 cards — you ran into the storm with only what you could grab.",
+   penaltyType:'discard_to_3',
+   pmId:'iron'},
+
+  // ── BOSS ────────────────────────────────────────────────────
+  {id:'boss_arrival',title:'The Arrival',cat:'BOSS ENCOUNTER',boss:true,diff:'BOSS',threshold:15,
+   restrict:[],restrictLabel:'OPEN — throw everything you have at it',
+   situation:"Everything you have seen was preparation. The lights, the sounds, the things at the door — they were warnings. Something has arrived. It has been here before. This time you are going to face it.",
+   challenge:'Group combined Power 15+. Memory cards roll 2d6. Spotlight: highest single card. Worth 2 trophies.',pm:"Veteran's Instinct + any Weapon — automatic group success",
+   success:"It retreated. Everyone draws 2 cards — you bought time and you know how to use it.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It wasn't enough. Lose all your Weapon cards — it stripped you of everything you could use against it.",
+   penaltyType:'lose_weapons',
+   pmId:'veteran'},
+
+  {id:'boss_theone',title:'The One That Was Always There',cat:'BOSS ENCOUNTER',boss:true,diff:'BOSS',threshold:20,
+   restrict:['interference'],restrictLabel:'NO INTERFERENCE — this is not the time for games',
+   situation:"Every encounter. Every sighting. Every strange night. It was all the same thing. One entity. Watching. Learning your patterns. Tonight it stops watching.",
+   challenge:'Group combined Power 20+. Memory dice count. Entity counters most-common category — those score 0. Worth 2 trophies.',pm:'The Warning — immune to counter. Automatic Spotlight.',
+   success:"You surprised it. Everyone draws 3 cards — you earned this.",
+   perkType:'draw_count',perkCount:3,
+   failure:"It wasn't surprised. It never is. Lose all your Memory cards — it took everything you thought you knew.",
+   penaltyType:'lose_memory',
+   pmId:'warning'},
+
+  // ── EASY ─────────────────────────────────────────────────────
+
+  {id:'icecream2',title:'The Ice Cream Truck',cat:'EVERYDAY HORROR',boss:false,diff:'EASY',threshold:2,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"It is 3am in November and the ice cream truck is rolling slowly down the street playing a song in a key that does not exist. Every house on the block is dark except yours.",
+   challenge:'Any card Power 2+. Document it and stay inside.',pm:'Bad Feeling',
+   success:"It turned at the end of the block and the music cut off mid-note. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"It stopped in front of the house. Discard 1 card — you do not remember going outside but your shoes are wet.",
+   penaltyType:'discard_count',penaltyCount:1,
+   pmId:'bad'},
+
+  {id:'glowing_eyes',title:'The Kids on the Corner',cat:'CRYPTID ENCOUNTER',boss:false,diff:'EASY',threshold:3,
+   restrict:['weapon'],restrictLabel:'NOT WEAPONS — they look like children',
+   situation:"Six children standing in a row on the sidewalk at 2am, eyes glowing a flat amber, not blinking, smiling identically. They raise one hand each — not a wave, a greeting, like they recognise you.",
+   challenge:'Instinct (Power 3+) or Memory (any roll). Do not approach.',pm:'Bad Feeling',
+   success:"The light scattered them. They ran in six different directions simultaneously. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"They walked toward the group in unison. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'bad'},
+
+  {id:'stroller',title:'The Stroller in the Park',cat:'CRYPTID ENCOUNTER',boss:false,diff:'EASY',threshold:3,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"There is a stroller left alone on the park path at midnight. Two wet, grey hands with too many fingers are reaching over the hood. Whatever is inside it is not a baby.",
+   challenge:'Any card Power 3+. Get past it or deal with it.',pm:'Flare Gun',
+   success:"The light drove it back into the stroller and it went still. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"It climbed out. Lose 1 card and lose your highest Power card.",
+   penaltyType:'lose_highest',
+   pmId:'flare'},
+
+  {id:'drone_hover',title:'The Government Drone',cat:'CONSPIRACY',boss:false,diff:'EASY',threshold:2,
+   restrict:['weapon'],restrictLabel:'NOT WEAPONS — do not shoot the drone',
+   situation:"A matte black drone has been hovering silently above the house since 3am. It has no registration markings and does not appear on any FAA tracking system. It has not moved in four hours.",
+   challenge:'Tool (Power 2+) or Memory (any roll). Identify it and find out why it is here.',pm:'Burner Phone',
+   success:"You went dark and it lost the signal. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"It followed you when you left. Lose all your Tool cards — it has your equipment frequencies now.",
+   penaltyType:'lose_tools',
+   pmId:'burner'},
+
+  {id:'red_windows',title:'The Car with Red Windows',cat:'EVERYDAY HORROR',boss:false,diff:'EASY',threshold:2,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"A car is sitting alone in an empty parking lot, engine off, every window glowing from inside with a deep red light. The light pulses slowly. Nobody is in the driver seat.",
+   challenge:'Any card Power 2+. Investigate or document.',pm:'Trail Camera',
+   success:"The light stopped and the car was just a car. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"The light pulsed faster when the group got close. Discard 1 card — something inside noticed.",
+   penaltyType:'discard_count',penaltyCount:1,
+   pmId:'camera'},
+
+  {id:'butcher_alley',title:'The Butcher in the Alley',cat:'CRYPTID ENCOUNTER',boss:false,diff:'EASY',threshold:3,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"A figure in a white apron is standing in the alley wearing a head far too large for the body — smooth, pale, featureless. It is holding something. It is not moving.",
+   challenge:'Any card Power 3+. Get past the alley.',pm:'Flare Gun',
+   success:"It stepped aside when the light hit it. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"It turned its head to face the group. Lose 1 card — the group ran the long way around.",
+   penaltyType:'discard_count',penaltyCount:1,
+   pmId:'flare'},
+
+  {id:'mannequin_store',title:'The Mannequin That Turned',cat:'EVERYDAY HORROR',boss:false,diff:'EASY',threshold:2,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"The mannequin in the shop window was facing left when the group passed going in. It is facing the group now. The store is closed and the lights are off.",
+   challenge:'Any card Power 2+. Keep moving or investigate.',pm:'Bad Feeling',
+   success:"You moved on. It was facing left again when you looked back a block later. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"There are two of them now. Discard 1 card.",
+   penaltyType:'discard_count',penaltyCount:1,
+   pmId:'bad'},
+
+  {id:'dog_pack',title:'The Dog Pack',cat:'CRYPTID ENCOUNTER',boss:false,diff:'EASY',threshold:3,
+   restrict:['memory','artifact'],restrictLabel:'NOT MEMORY OR ARTIFACTS — react',
+   situation:"Twelve dogs standing perfectly still in a semicircle at the end of the road, all facing the group, all completely silent. Their eyes are catching the light wrong — too bright, too flat.",
+   challenge:'Weapon (Power 3+) or Instinct (Power 3+). Hold them back.',pm:'Flare Gun',
+   success:"The flare scattered them. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"They did not scatter. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'flare'},
+
+  {id:'tv_static_face',title:'The Face in the Static',cat:'PARANORMAL',boss:false,diff:'EASY',threshold:2,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — look and think',
+   situation:"The television turned on by itself and it is showing a face in the static. It blinks when you blink. It has been there for twenty minutes.",
+   challenge:'Tool (Power 2+) or Memory (any roll). Identify what it is.',pm:'EVP Recorder',
+   success:"The EVP recorder captured something. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"It opened its mouth. Discard 1 card.",
+   penaltyType:'discard_count',penaltyCount:1,
+   pmId:'evp'},
+
+  {id:'highway_figure',title:'The Figure on the Overpass',cat:'CRYPTID ENCOUNTER',boss:false,diff:'EASY',threshold:2,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"Something is standing on the overpass railing, facing the road below. It is too tall and too thin and it is watching the cars. It does not sway.",
+   challenge:'Any card Power 2+. Drive past or stop.',pm:'Bad Feeling',
+   success:"You drove past. In the rear-view it was gone. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"You slowed down. It looked at the car specifically. Discard 1 card.",
+   penaltyType:'discard_count',penaltyCount:1,
+   pmId:'bad'},
+
+  // ── MODERATE ─────────────────────────────────────────────────
+
+  {id:'washer_monster',title:'The Laundromat',cat:'CRYPTID ENCOUNTER',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['memory','artifact'],restrictLabel:'NOT MEMORY OR ARTIFACTS — fight it',
+   situation:"Something is climbing out of machine number seven at the laundromat — pale, wet, far too large to have been inside it, with hands that bend the wrong way. The thump and squish of the machine has not stopped.",
+   challenge:'Weapon (Power 4+) or Instinct (Power 4+). Stop it before it is fully out.',pm:'Salt Round',
+   success:"You drove it back in. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It got fully out. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'salt'},
+
+  {id:'pool_thing',title:'The Town Pool',cat:'CRYPTID ENCOUNTER',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['memory','artifact'],restrictLabel:'NOT MEMORY OR ARTIFACTS — physical response only',
+   situation:"The abandoned town pool still has water in it. Something is floating face-down in the deep end. It has been there long enough that it should not still be floating. When the group approaches it rotates slowly to face them without moving its limbs.",
+   challenge:'Weapon (Power 4+) or Instinct (Power 4+). Deal with it.',pm:'Salt Round',
+   success:"Salt and iron at the pool edge. It sank. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"It climbed out of the pool. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'salt'},
+
+  {id:'scarecrow2',title:'The Scarecrow in the Field',cat:'CRYPTID ENCOUNTER',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — react now',
+   situation:"The scarecrow in the field was not there this morning. The farmer says he has never owned a scarecrow. It is wearing someone else's clothes and it is closer to the fence than it was an hour ago.",
+   challenge:'Weapon (Power 4+) or Instinct (Power 4+). Confront it before dark.',pm:'Salt Round',
+   success:"You confirmed what it was and drove it back. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"It reached the fence. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'salt'},
+
+  {id:'hospital_hallway',title:'The End of the Hallway',cat:'PARANORMAL',boss:false,diff:'MODERATE',threshold:5,
+   restrict:['weapon'],restrictLabel:'NOT WEAPONS — this is a hospital',
+   situation:"The hospital hallway is 200 feet long. Under the flickering light at the far end there is a figure that was not there a moment ago. It is walking toward the group at the pace of someone who knows they will get there eventually.",
+   challenge:'Tool (Power 5+) or Instinct (Power 5+). Get out of the hallway.',pm:"Veteran's Instinct",
+   success:"You moved fast and it did not follow past the exit. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It reached the group before the exit. Lose all your Tool cards.",
+   penaltyType:'lose_tools',
+   pmId:'veteran'},
+
+  {id:'swimming_pool_night',title:'The Neighbourhood Pool at 3am',cat:'PARANORMAL',boss:false,diff:'MODERATE',threshold:4,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"Something is swimming laps in the neighbourhood pool at 3am, fast and rhythmic. The pool gate is locked from the inside. Whatever is in there is larger than the pool lane should allow.",
+   challenge:'Any card Power 4+. Identify it.',pm:'Night Vision Goggles',
+   success:"You got a clear look and documented it. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It noticed the group and stopped swimming. Discard 1 card — you ran.",
+   penaltyType:'discard_count',penaltyCount:1,
+   pmId:'nvg'},
+
+  {id:'atm_screen',title:'The ATM',cat:'WEIRD & WILD',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — technical',
+   situation:"The ATM on the corner is showing a live feed of the inside of someone's house instead of its normal screen. The family inside it does not know they are being watched. There is something else in the house that does.",
+   challenge:'Tool (Power 4+) or Memory (roll 4+). Warn them before it acts.',pm:'Burner Phone',
+   success:"You got through in time. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The feed cut to static before you could act. Lose all your Memory cards.",
+   penaltyType:'lose_memory',
+   pmId:'burner'},
+
+  {id:'reflection_follower',title:'The Thing in the Puddle',cat:'PARANORMAL',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — knowledge and tools',
+   situation:"The reflection in the puddle is showing a street that looks like this one but is wrong in specific ways — wrong cars, wrong buildings, different sky. Something in the reflection is looking up at the group.",
+   challenge:'Artifact (Power 4+) or Memory (roll 4+). Sever the connection.',pm:'Cracked Mirror',
+   success:"The mirror broke the link. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"It reached through. Lose all your Artifact cards.",
+   penaltyType:'lose_artifacts',
+   pmId:'mirror'},
+
+  {id:'crows_window',title:'The Crows at the Window',cat:'PARANORMAL',boss:false,diff:'MODERATE',threshold:4,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"Forty crows are sitting on the windowsill facing inward, watching one specific person in the room. They have been there for two hours. New ones replace any that leave.",
+   challenge:'Any card Power 4+. Figure out what they are marking.',pm:'Field Notes',
+   success:"You identified the pattern before it resolved. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"They came through the window. Lose your highest Power card.",
+   penaltyType:'lose_highest',
+   pmId:'notes'},
+
+  {id:'road_ripple',title:'The Butcher Shop Window',cat:'EVERYDAY HORROR',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['weapon'],restrictLabel:'NOT WEAPONS — not yet',
+   situation:"The display in the butcher shop window on Harlow Street has been rearranged overnight into a shape that is not a cut of meat. The butcher is standing behind the glass watching the street. He is smiling and he has not moved in four hours.",
+   challenge:'Tool (Power 4+) or Memory (roll 4+). Identify what the display is arranged to show.',pm:'Field Notes',
+   success:"You documented it before he changed it. Draw 2 cards — you know what the shape means.",
+   perkType:'draw_count',perkCount:2,
+   failure:"He saw you looking. Lose all your Memory cards — the window is clear when you look back.",
+   penaltyType:'lose_memory',
+   pmId:'notes'},
+
+  {id:'shopping_cart',title:'The Woman with the Cart',cat:'EVERYDAY HORROR',boss:false,diff:'MODERATE',threshold:4,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"An old woman is pushing a shopping cart down the centre of Vicker Street at midnight, moving at a steady pace, wearing a horrible fixed expression — not angry, not afraid, something that does not belong on a human face. The cart is full of something covered with a tarp and whatever is under the tarp is moving.",
+   challenge:'Any card Power 4+. Find out what is in the cart.',pm:'Trust Nobody',
+   success:"You got a look before she turned the corner. Draw 2 cards — you know what she is carrying and where it is going.",
+   perkType:'draw_count',perkCount:2,
+   failure:"She stopped and turned to look directly at you. Lose your highest Power card.",
+   penaltyType:'lose_highest',
+   pmId:'trust'},
+
+  {id:'tunnel',title:'The Water Tower',cat:'CRYPTID ENCOUNTER',boss:false,diff:'MODERATE',threshold:5,
+   restrict:['memory','artifact'],restrictLabel:'NOT MEMORY OR ARTIFACTS — physical response',
+   situation:"Something is sitting on top of the Harlow water tower — large, pale, hunched, with limbs that hang down the side of the tank at an angle that suggests more joints than a person has. It has been up there since 3am and it is watching the town.",
+   challenge:'Weapon (Power 5+) or Instinct (Power 5+). Drive it off the tower before daylight.',pm:'Flare Gun',
+   success:"The flare made it drop away into the dark. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It watched until dawn and then climbed down the far side. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'flare'},
+
+  {id:'mirror_hallway',title:'The Extra Door',cat:'PARANORMAL',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — investigation only',
+   situation:"There is a door at the end of the hallway that was not there yesterday. It is made of the same material as the wall but fits perfectly. It has no handle. It has a keyhole. Something on the other side is looking through the keyhole.",
+   challenge:'Artifact (Power 4+) or Memory (roll 5+). Identify what is on the other side.',pm:'Cracked Mirror',
+   success:"The mirror revealed it without opening the door. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The door opened from the other side. Lose all your Artifact cards.",
+   penaltyType:'lose_artifacts',
+   pmId:'mirror'},
+
+  {id:'carnival',title:'The Ferris Wheel',cat:'WEIRD & WILD',boss:false,diff:'MODERATE',threshold:5,
+   restrict:['weapon'],restrictLabel:'NOT WEAPONS — investigate first',
+   situation:"A ferris wheel is running in the empty field off Route 9 — lit up, turning at full speed, music playing, with no carnival around it and no power source visible. Every gondola is occupied by a figure that does not move as the wheel turns.",
+   challenge:'Tool (Power 5+) or Memory (roll 5+). Find out what is in the gondolas.',pm:'Night Vision Goggles',
+   success:"The NVGs gave you a clear look before the wheel stopped. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The wheel stopped with one gondola at the bottom. The door opened. Lose all your Memory cards.",
+   penaltyType:'lose_memory',
+   pmId:'nvg'},
+
+  // ── HARD ─────────────────────────────────────────────────────
+
+  {id:'elevator',title:'Floor Thirteen',cat:'PARANORMAL',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — investigation only',
+   situation:"The elevator at the Harlow Inn goes to a floor thirteen that is not on the building plans. Looking through the peephole of every door on thirteen shows the same thing — the same figure, standing the same distance away, looking back.",
+   challenge:'Memory (roll 6+) or Tool (Power 6+). Find out what is behind the doors before one opens.',pm:'Field Notes',
+   success:"You mapped the floor and got out before a door opened. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"A door opened. Lose all your Memory cards — you do not remember coming back down.",
+   penaltyType:'lose_memory',
+   pmId:'notes'},
+
+  {id:'meat_hooks',title:'The Cold Storage',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:7,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — weapons and nerve only',
+   situation:"The meat locker at the warehouse has been making sounds for three days. Not settling, not the refrigeration unit — rhythmic impact sounds, like something working. The door is locked from the inside.",
+   challenge:'Weapon (Power 7+) or Instinct (Power 7+). Get in there.',pm:'Shotgun',
+   success:"You got in and got it out. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It got out first. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'shotgun'},
+
+  {id:'tar_pit',title:'The Tar in the Basement',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:6,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — get out or fight',
+   situation:"The basement floor is covered in something black and slow-moving that was not there this morning. It is warm to the touch. Something beneath the surface is pushing upward at irregular intervals like a hand pressing through a membrane.",
+   challenge:'Weapon (Power 6+) or Instinct (Power 6+). Seal the basement.',pm:'Iron Nails',
+   success:"Iron at the threshold. The pushing stopped. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It came through. Lose all your Weapon cards and all your Artifact cards.",
+   penaltyType:'lose_weapons',
+   pmId:'iron'},
+
+  {id:'sewer_hand',title:'The Hands from the Drain',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:6,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — do not hesitate',
+   situation:"Hands are coming out of the street drains on Fourth Avenue — too many per drain, too long, moving with purpose toward the sidewalk. There are dozens of drains.",
+   challenge:'Weapon (Power 6+) or Instinct (Power 6+) ONLY. Hold the perimeter.',pm:'Salt Round',
+   success:"Salt at every drain. The hands retreated. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"They reached the sidewalk. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'salt'},
+
+  {id:'hospital_patient',title:'The Patient in Room 7',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:7,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — confront it directly',
+   situation:"Room 7 has been occupied for eleven years by a patient with no intake records, no visitors, no chart. The night nurses will not go past the door. Tonight the door is open.",
+   challenge:'Weapon (Power 7+) or Instinct (Power 7+). See what is in there.',pm:"Veteran's Instinct",
+   success:"You faced it and it yielded. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"You could not face it. Lose all your Memory cards.",
+   penaltyType:'lose_memory',
+   pmId:'veteran'},
+
+  {id:'shadow_man',title:'The Shadow That Has No Source',cat:'PARANORMAL',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon','tool'],restrictLabel:'NOT WEAPONS OR TOOLS — shadow and light',
+   situation:"There is a shadow on the wall of the living room that does not correspond to any object or person in the room. It is the shadow of something standing behind the group. When someone turns around there is nothing there. The shadow does not disappear.",
+   challenge:'Artifact (Power 6+) or Memory (roll 7+). Identify and banish it.',pm:'Séance Candle',
+   success:"The candle resolved it. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The shadow moved toward the ceiling. Lose all your Artifact cards.",
+   penaltyType:'lose_artifacts',
+   pmId:'candle'},
+
+  {id:'satellite',title:'The Satellite That Follows',cat:'EXTRATERRESTRIAL',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — technical and observational',
+   situation:"The same satellite has been visible in the sky for six consecutive nights at different times, always directly overhead, always for exactly forty-seven minutes. It has begun descending.",
+   challenge:'Tool (Power 6+) or Memory (roll 6+). Track its trajectory and prepare.',pm:'Signal Jammer',
+   success:"You jammed its sensors before it locked on. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It locked on. Lose all your Tool cards.",
+   penaltyType:'lose_tools',
+   pmId:'jammer'},
+
+  {id:'dna_test',title:'The Grey Sedan',cat:'CONSPIRACY',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — investigate carefully',
+   situation:"The same grey sedan has been parked outside 14 Colm Street for nine consecutive days. The driver does not eat, does not sleep, does not leave the car. Through the window he appears to be watching the house and writing things down. He has filled four notebooks.",
+   challenge:'Memory (roll 6+) or Tool (Power 6+). Find out who he is and what he has written.',pm:'Police Scanner',
+   success:"You got a notebook. Draw 3 cards — what is in it changes everything.",
+   perkType:'draw_count',perkCount:3,
+   failure:"He drove away before you got there. The notebooks are gone. Lose all your Memory cards.",
+   penaltyType:'lose_memory',
+   pmId:'scanner'},
+
+  {id:'fog_figure',title:'The Fog That Walks',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:7,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — direct confrontation',
+   situation:"The fog rolling in from the harbour has a shape inside it — upright, bilateral, moving against the current of the fog around it. It is not a person. It has stopped outside the building and appears to be waiting.",
+   challenge:'Weapon (Power 7+) or Instinct (Power 7+). Drive it back into the harbour.',pm:'Flare Gun',
+   success:"The flare tore it apart. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It came inside. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'flare'},
+
+  {id:'blank_face',title:'The Blank-Faced Man',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:7,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — direct response',
+   situation:"A man in a grey suit is standing across the street. He has no face — not hidden, not obscured, genuinely absent. He is facing the building. He has been there for six hours.",
+   challenge:'Weapon (Power 7+) or Instinct (Power 7+). Confront him before nightfall.',pm:"Veteran's Instinct",
+   success:"You approached and he was gone before you reached him. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"You waited. He was inside the building at midnight. Lose all your Memory cards.",
+   penaltyType:'lose_memory',
+   pmId:'veteran'},
+
+  {id:'ufo_formation',title:'The Formation',cat:'EXTRATERRESTRIAL',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — observe and document',
+   situation:"Seven lights in a chevron formation have been hovering over the reservoir for two hours. They are not aircraft. One of them has separated from the formation and is descending toward the group.",
+   challenge:'Tool (Power 6+) or Memory (roll 6+). Document before contact.',pm:'Signal Jammer',
+   success:"You jammed the descending unit. It rejoined the formation and the group ascended. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It reached the group. Lose all your Memory cards — the next hour is gone.",
+   penaltyType:'lose_memory',
+   pmId:'jammer'},
+
+  {id:'skin_walker',title:'The Wrong Neighbour',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:7,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — weapons and instinct only',
+   situation:"The neighbour is standing in their yard at 4am. The posture is wrong. The proportion of the limbs is wrong. When it waves, it waves with both hands simultaneously.",
+   challenge:'Weapon (Power 7+) or Instinct (Power 7+). Do not let it know you know.',pm:'Silver Round',
+   success:"You held the line. It moved on by dawn. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It knew you knew. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'silver'},
+
+  {id:'giant_web',title:'The Web in the Barn',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:7,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — burn it',
+   situation:"The interior of the barn is filled wall to wall with a web structure too large and too organised for any known spider. Something the size of a tractor is moving in the centre of it.",
+   challenge:'Weapon (Power 7+) or Instinct (Power 7+) ONLY. Fire is the answer.',pm:'Molotov Cocktail',
+   success:"You burned it. It did not survive. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The fire was not enough. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'molotov'},
+
+  {id:'empty_suit',title:'The Suit Walking Down Main Street',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:6,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — direct',
+   situation:"A business suit is walking down the centre of Main Street at 3am with no visible person inside it. It is moving at a normal walking pace with a normal gait. It turns at the corner of Fifth.",
+   challenge:'Weapon (Power 6+) or Instinct (Power 6+). Follow it and stop it.',pm:'Salt Round',
+   success:"Salt disrupted whatever was wearing it. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It noticed the group following. Lose your highest Power card.",
+   penaltyType:'lose_highest',
+   pmId:'salt'},
+
+  // ── BRUTAL ───────────────────────────────────────────────────
+
+  {id:'hand_ceiling',title:'The Hands on the Ceiling',cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:8,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — it is already inside',
+   situation:"There are thirty-seven handprints on the ceiling, pressed from above as though something large has been moving across the outside of the roof. Some of them are still wet. The attic hatch is moving.",
+   challenge:'Weapon (Power 8+) or Instinct (Power 8+) ONLY. Get to it before it gets down.',pm:'Shotgun',
+   success:"You got there first. It did not come down. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It came down. Discard down to 3 cards.",
+   penaltyType:'discard_to_3',
+   pmId:'shotgun'},
+
+  {id:'swarm_face',title:'The Swarm That Has a Face',cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:8,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — fight it',
+   situation:"The insect swarm moving down the street has a face. Not a suggestion of a face — a deliberate, recognisable human face, formed by ten thousand insects moving in perfect coordination. It is looking for something.",
+   challenge:'Weapon (Power 8+) or Instinct (Power 8+) ONLY. Disperse it before it finds it.',pm:'Flare Gun',
+   success:"Fire scattered it. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It found what it was looking for. Discard down to 3 cards.",
+   penaltyType:'discard_to_3',
+   pmId:'flare'},
+
+  {id:'deep_trench',title:'What Came Out of the Trench',cat:'EXTRATERRESTRIAL',boss:false,diff:'BRUTAL',threshold:9,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — it is already on shore',
+   situation:"The deep sea survey vessel recovered something from the Mariana Trench and it got out. It is the size of a house. It is moving inland. It has not been seen before because nothing has survived seeing it before.",
+   challenge:'Weapon (Power 9+) or Instinct (Power 9+) ONLY. Slow it down.',pm:'Shotgun',
+   success:"You bought time for the evacuation. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"You could not slow it down. Discard down to 3 cards.",
+   penaltyType:'discard_to_3',
+   pmId:'shotgun'},
+
+  {id:'hive_mind',title:'The Hive',cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:8,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — destroy the core',
+   situation:"The residents of the apartment block have not left in nine days. They stand at their windows in shifts, watching the street. The super says they are all fine. The super's eyes are full of something moving.",
+   challenge:'Weapon (Power 8+) or Instinct (Power 8+) ONLY. Find and destroy the core.',pm:'Flare Gun',
+   success:"You found it in the basement and burned it. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The super called the others down. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'flare'},
+
+  {id:'crawler',title:'The Crawler on the Bridge',cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:8,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — do not stop the car',
+   situation:"Something is moving across the underside of the bridge on all fours, upside down, fast. It is the size of a person but the limbs move in the wrong sequence. It has stopped beneath the car.",
+   challenge:'Weapon (Power 8+) or Instinct (Power 8+) ONLY. Get off the bridge.',pm:'Flare Gun',
+   success:"The flare made it drop. You crossed. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It came through the floor. Discard down to 3 cards.",
+   penaltyType:'discard_to_3',
+   pmId:'flare'},
+
+  {id:'black_eyed_adults',title:'The Black-Eyed Adults',cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:8,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — do not let them in',
+   situation:"Four adults in formal clothes are standing at the front door. Their eyes are entirely black. They are asking in a flat, calm voice to be let inside to use the telephone. They have been asking for two hours.",
+   challenge:'Weapon (Power 8+) or Instinct (Power 8+) ONLY. Keep the door closed until dawn.',pm:'Iron Nails',
+   success:"Iron at the threshold. They left at 4am. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"Someone opened the door. Lose all your Weapon cards and all your Artifact cards.",
+   penaltyType:'lose_weapons',
+   pmId:'iron'},
+
+  {id:'storm_giant',title:'The Scarecrow Field',cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:9,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — act before dawn',
+   situation:"The Pell farm field on the edge of Harlow had no scarecrows at sunset. At 3am there are sixty-seven of them arranged in concentric rings facing inward. They are dressed in clothes that belong to people who live in Harlow. The clothes are not missing from anyone's wardrobe. They are copies.",
+   challenge:'Weapon (Power 9+) or Instinct (Power 9+) ONLY. Destroy the inner ring before dawn.',pm:'Molotov Cocktail',
+   success:"Fire broke the formation. They collapsed. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"Dawn came. The scarecrows were gone. The clothes were on the doorsteps of the houses they belonged to. Discard down to 3 cards.",
+   penaltyType:'discard_to_3',
+   pmId:'molotov'},
+
+  {id:'mothman_bridge',title:'Mothman at the Bridge',cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:8,
+   restrict:['tool','artifact'],restrictLabel:'NOT TOOLS OR ARTIFACTS — instinct and weapons',
+   situation:"Mothman is sitting on the bridge railing, twelve feet of wings folded, red eyes watching the road below. It is not moving. Everyone who has tried to cross the bridge tonight has turned back. You need to cross the bridge.",
+   challenge:'Weapon (Power 8+) or Instinct (Power 8+). Cross the bridge.',pm:"Veteran's Instinct",
+   success:"It let you pass. It was a warning, not a threat. Draw 2 cards — it showed you something.",
+   perkType:'draw_and_preview',perkCount:2,
+   failure:"You turned back. Lose all your Memory cards — whatever it was warning you about has already happened.",
+   penaltyType:'lose_memory',
+   pmId:'veteran'},
+
+  // ── BOSS 3-5 ─────────────────────────────────────────────────
+
+  {id:'boss_hive_queen',title:'The Mother',cat:'BOSS ENCOUNTER',boss:true,diff:'BOSS',threshold:18,
+   restrict:['memory'],restrictLabel:'NOT MEMORY — this is a direct confrontation',
+   situation:"Whatever has been controlling the town has a body. It is in the water tower. It has been there for forty years growing outward through the water supply and it is aware the group is coming. It is very large and it is not afraid.",
+   challenge:'Group combined Power 18+. Everyone must contribute. Worth 2 trophies.',pm:'Flare Gun — fire is the only language it understands. Automatic group success.',
+   success:"You burned it out of the tower. Everyone draws 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It sent the town after you. Everyone loses all their Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'flare'},
+
+  {id:'boss_dark_star',title:'The Signal Source',cat:'BOSS ENCOUNTER',boss:true,diff:'BOSS',threshold:20,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — scientific confrontation only',
+   situation:"The object landed in the reservoir at 3am. It is not a meteor. It is broadcasting on every frequency simultaneously and everything electronic within two miles is receiving it. It is sixty feet across and it has a door and the door is open.",
+   challenge:'Group combined Power 20+. Tools and Artifacts score double. Memory dice count. Worth 2 trophies.',pm:'Signal Jammer — cuts the broadcast. Automatic group success.',
+   success:"You shut it down before it finished transmitting. Everyone draws 3 cards.",
+   perkType:'draw_count',perkCount:3,
+   failure:"It finished transmitting. Everyone loses all their Tool cards.",
+   penaltyType:'lose_tools',
+   pmId:'jammer'},
+
+  {id:'boss_the_fog',title:'The Night It All Came Out',cat:'BOSS ENCOUNTER',boss:true,diff:'BOSS',threshold:16,
+   restrict:[],restrictLabel:'OPEN — everything you have',
+   situation:"They all came out at once. Everything the group has encountered — every creature, every signal, every wrong thing — all of it emerged simultaneously at midnight and they are all moving toward the same point. The group is at that point.",
+   challenge:'Group combined Power 16+. Every player must play at least Power 4 or the line breaks. Worth 2 trophies.',pm:"Veteran's Instinct — you have seen all of this before. Automatic group success.",
+   success:"You held the line until dawn. Everyone draws 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The line broke. Everyone loses all their Weapon cards and all their Artifact cards.",
+   penaltyType:'lose_weapons',
+   pmId:'veteran'},
+
+  // ── FINAL 10 — VISUAL THREATS ─────────────────────────────────
+
+  {id:'postal_worker',title:'The Postal Worker',cat:'EVERYDAY HORROR',boss:false,diff:'EASY',threshold:2,
+   restrict:[],restrictLabel:'OPEN — any card',
+   situation:"The postal worker on your street has been delivering mail for six hours on a Sunday in a town with no post office. Every envelope is addressed to the same name. That name is yours.",
+   challenge:'Any card Power 2+. Figure out who is sending them.',pm:'Bad Feeling',
+   success:"You intercepted the last one before it was delivered. Draw 1 card — the contents were a warning.",
+   perkType:'draw_and_preview',perkCount:1,
+   failure:"You opened one. Discard 1 card — you cannot unread what was inside.",
+   penaltyType:'discard_count',penaltyCount:1,
+   pmId:'bad'},
+
+  {id:'teeth_ground',title:'The Teeth',cat:'CRYPTID ENCOUNTER',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['memory','artifact'],restrictLabel:'NOT MEMORY OR ARTIFACTS — act now',
+   situation:"In the car park on Deller Street, something enormous is pushing up from underneath the asphalt — the surface buckling outward from a central point, the edges lined with teeth the size of fingers pressing through the cracks from below. The asphalt is still rising.",
+   challenge:'Weapon (Power 4+) or Instinct (Power 4+). Get clear and hold it down.',pm:'Iron Nails',
+   success:"Iron driven into the cracks stopped it cold. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The surface broke. Something came up. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'iron'},
+
+  {id:'elevator_man',title:'The Man in the Elevator',cat:'CRYPTID ENCOUNTER',boss:false,diff:'MODERATE',threshold:4,
+   restrict:['weapon'],restrictLabel:'NOT WEAPONS — enclosed space, unknown entity',
+   situation:"The man in the elevator is facing the back wall and has been on this floor for forty minutes without the doors closing. He has not moved. He is wearing a coat that is too long and his feet do not quite reach the floor.",
+   challenge:'Instinct (Power 4+) or Memory (roll 4+). Get past him.',pm:'Trust Nobody',
+   success:"You took the stairs. The elevator doors finally closed. Draw 1 card.",
+   perkType:'draw_count',perkCount:1,
+   failure:"The doors closed with the group inside. Lose your highest Power card.",
+   penaltyType:'lose_highest',
+   pmId:'trust'},
+
+  {id:'chalk_circle',title:'The Chalk Circle',cat:'PARANORMAL',boss:false,diff:'MODERATE',threshold:5,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — this is ritual and knowledge',
+   situation:"Someone drew a chalk circle twenty feet across in the middle of the car park overnight. Every animal in the neighbourhood is sitting at the perimeter facing in. The centre of the circle is slightly warmer than the air around it.",
+   challenge:'Memory (roll 5+) or Artifact (Power 5+). Identify the ritual before it completes.',pm:'Séance Candle',
+   success:"You broke the circle before dawn. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The centre got warmer. Lose all your Artifact cards.",
+   penaltyType:'lose_artifacts',
+   pmId:'candle'},
+
+  {id:'backyard_light',title:'The Light in the Backyard',cat:'EXTRATERRESTRIAL',boss:false,diff:'EASY',threshold:3,
+   restrict:['weapon','instinct'],restrictLabel:'NOT WEAPONS OR INSTINCT — document it',
+   situation:"There is a perfectly circular patch of light in the backyard about ten feet across, with no visible source above it. It has been there for twenty minutes and the grass underneath it is bone dry.",
+   challenge:'Tool (Power 3+) or Memory (any roll). Document it.',pm:'Trail Camera',
+   success:"You got full documentation before it vanished. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"You stepped into it. Lose all your Memory cards — the next hour is missing.",
+   penaltyType:'lose_memory',
+   pmId:'camera'},
+
+  {id:'glass_eye',title:'The Eye on the TV',cat:'PARANORMAL',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon','tool','instinct'],restrictLabel:'ARTIFACTS OR MEMORY ONLY — this is not physical',
+   situation:"The television is off but displaying a single enormous eye that fills the screen — blinking slowly, iris moving, clearly watching the room. Every television in the house shows the same eye. It has been there for two hours and it has not blinked the same number of times twice.",
+   challenge:'Artifact (Power 6+) or Memory (roll 6+) ONLY. Identify what is looking through the screen.',pm:'Cracked Mirror',
+   success:"The mirror broke the line of sight and the screens went dark. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"The eye focused on one specific person in the room. Lose all your Artifact cards.",
+   penaltyType:'lose_artifacts',
+   pmId:'mirror'},
+
+  {id:'nail_figure',title:'The Figure Made of Nails',cat:'CRYPTID ENCOUNTER',boss:false,diff:'HARD',threshold:7,
+   restrict:['tool','memory'],restrictLabel:'NOT TOOLS OR MEMORY — direct confrontation',
+   situation:"Standing at the end of the driveway is a figure assembled entirely from nails — thousands of them, forming a rough human shape that moves with a sound like a jar of coins rolling down stairs. It is moving toward the front door.",
+   challenge:'Weapon (Power 7+) or Instinct (Power 7+). Stop it at the threshold.',pm:'Iron Nails',
+   success:"Iron at the door held its own kind. It collapsed. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It reached the door. Lose all your Weapon cards.",
+   penaltyType:'lose_weapons',
+   pmId:'iron'},
+
+  {id:'crowd_face',title:'Aisle Seven',cat:'CRYPTID ENCOUNTER',boss:false,diff:'MODERATE',threshold:5,
+   restrict:['weapon','artifact'],restrictLabel:'NOT WEAPONS OR ARTIFACTS — observation and instinct',
+   situation:"Standing in aisle seven of the Harlow Convenience Mart is a figure in ordinary clothes with a smooth, blank, featureless face — not masked, not obscured, just absent. It is standing with a basket. It has been in aisle seven for three hours.",
+   challenge:'Instinct (Power 5+) or Memory (roll 5+). Identify what it is before it checks out.',pm:'Trust Nobody',
+   success:"You identified the tell and cut it off before it left the store. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"It left the store. It is somewhere in Harlow now and you do not know where. Lose all your Memory cards.",
+   penaltyType:'lose_memory',
+   pmId:'trust'},
+
+  {id:'flesh_door',title:'The Man in the Doorway',cat:'CRYPTID ENCOUNTER',boss:false,diff:'BRUTAL',threshold:8,
+   restrict:['tool','memory','artifact'],restrictLabel:'WEAPONS OR INSTINCT ONLY — direct confrontation',
+   situation:"A man eight feet tall and impossibly thin is standing in the open doorway of the abandoned Crale house on Merchant Street. He has been standing there for four days without moving, without eating, in the rain, facing the street. His face is pointed directly at your house.",
+   challenge:'Weapon (Power 8+) or Instinct (Power 8+) ONLY. Drive him away from the street.',pm:'Silver Round',
+   success:"Silver made him step back into the house. The door closed on its own. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"He took one step forward off the porch. Discard down to 3 cards.",
+   penaltyType:'discard_to_3',
+   pmId:'silver'},
+
+  {id:'static_child',title:'The Child Made of Static',cat:'PARANORMAL',boss:false,diff:'HARD',threshold:6,
+   restrict:['weapon','tool'],restrictLabel:'NOT WEAPONS OR TOOLS — cannot be fought physically',
+   situation:"A child made entirely of television static is standing in the kitchen, approximately four feet tall, flickering slightly. It is holding out one hand. Whatever it is offering is not visible.",
+   challenge:'Artifact (Power 6+) or Memory (roll 7+). Identify it and respond correctly.',pm:'Séance Candle',
+   success:"You understood what it was asking and answered. It dissolved. Draw 2 cards.",
+   perkType:'draw_count',perkCount:2,
+   failure:"You took what it was offering. Lose all your Memory cards.",
+   penaltyType:'lose_memory',
+   pmId:'candle'},
+];
+
+// ── ENCOUNTER IMAGES — drop files into images/encounters/ then uncomment ──
+// Recommended size: 600 x 280px, landscape JPG or PNG
+const ENCOUNTER_IMAGES={
+  // EASY
+  // pogs_enc:'images/encounters/pogs_enc.jpg',
+  // static:'images/encounters/static.jpg',
+  // algorithm_enc:'images/encounters/algorithm_enc.jpg',
+  // icecream:'images/encounters/icecream.jpg',
+  // mailbox:'images/encounters/mailbox.jpg',
+  // phonering:'images/encounters/phonering.jpg',
+  // parking:'images/encounters/parking.jpg',
+  // birdsong:'images/encounters/birdsong.jpg',
+  // reflection:'images/encounters/reflection.jpg',
+  // deer:'images/encounters/deer.jpg',
+  // barber:'images/encounters/barber.jpg',
+  // MODERATE
+  // cornfield:'images/encounters/cornfield.jpg',
+  // motel:'images/encounters/motel.jpg',
+  // cabin:'images/encounters/cabin.jpg',
+  // gasstation_enc:'images/encounters/gasstation_enc.jpg',
+  // broadcast:'images/encounters/broadcast.jpg',
+  // substitute:'images/encounters/substitute.jpg',
+  // doppelganger:'images/encounters/doppelganger.jpg',
+  // roadworks:'images/encounters/roadworks.jpg',
+  // anniversary:'images/encounters/anniversary.jpg',
+  // library:'images/encounters/library.jpg',
+  // neighbor_light:'images/encounters/neighbor_light.jpg',
+  // radio_station:'images/encounters/radio_station.jpg',
+  // trail_end:'images/encounters/trail_end.jpg',
+  // fog:'images/encounters/fog.jpg',
+  // grid:'images/encounters/grid.jpg',
+  // diner2:'images/encounters/diner2.jpg',
+  // hitchhiker2:'images/encounters/hitchhiker2.jpg',
+  // HARD
+  // treeline:'images/encounters/treeline.jpg',
+  // documents:'images/encounters/documents.jpg',
+  // mirror_enc:'images/encounters/mirror_enc.jpg',
+  // mothman_enc:'images/encounters/mothman_enc.jpg',
+  // grey_enc:'images/encounters/grey_enc.jpg',
+  // census:'images/encounters/census.jpg',
+  // sleepwalker:'images/encounters/sleepwalker.jpg',
+  // photograph:'images/encounters/photograph.jpg',
+  // contractor:'images/encounters/contractor.jpg',
+  // teeth:'images/encounters/teeth.jpg',
+  // town_clock:'images/encounters/town_clock.jpg',
+  // store_clerk:'images/encounters/store_clerk.jpg',
+  // basement_room:'images/encounters/basement_room.jpg',
+  // obituary:'images/encounters/obituary.jpg',
+  // hotel_floor:'images/encounters/hotel_floor.jpg',
+  // implant2:'images/encounters/implant2.jpg',
+  // twins:'images/encounters/twins.jpg',
+  // BRUTAL
+  // skinwalker_enc:'images/encounters/skinwalker_enc.jpg',
+  // wendigo_enc:'images/encounters/wendigo_enc.jpg',
+  // rake_encounter:'images/encounters/rake_encounter.jpg',
+  // doorbell:'images/encounters/doorbell.jpg',
+  // bigfoot_brutal:'images/encounters/bigfoot_brutal.jpg',
+  // BOSS
+  // boss_arrival:'images/encounters/boss_arrival.jpg',
+  // boss_theone:'images/encounters/boss_theone.jpg',
+  // boss_convergence:'images/encounters/boss_convergence.jpg',
+  // boss_door:'images/encounters/boss_door.jpg',
+  // boss_broadcast2:'images/encounters/boss_broadcast2.jpg',
+};
+// ── CARD IMAGES — uncomment each line when your illustration is ready ──
+// Drop files into images/cards/[category]/ then uncomment the matching line
+const CARD_IMAGES={
+  // WEAPONS — images/cards/weapons/
+  // rifle:'images/cards/weapons/rifle.jpg',
+  // shotgun:'images/cards/weapons/shotgun.jpg',
+  // salt:'images/cards/weapons/salt.jpg',
+  // iron:'images/cards/weapons/iron.jpg',
+  // flare:'images/cards/weapons/flare.jpg',
+  // knife:'images/cards/weapons/knife.jpg',
+  // silver:'images/cards/weapons/silver.jpg',
+  // crossbow:'images/cards/weapons/crossbow.jpg',
+  // beartrap:'images/cards/weapons/beartrap.jpg',
+  // axe:'images/cards/weapons/axe.jpg',
+  // molotov:'images/cards/weapons/molotov.jpg',
+  // taser:'images/cards/weapons/taser.jpg',
+  // machete:'images/cards/weapons/machete.jpg',
+  // wiresnare:'images/cards/weapons/wiresnare.jpg',
+  // ARTIFACTS — images/cards/artifacts/
+  // mirror:'images/cards/artifacts/mirror.jpg',
+  // compass:'images/cards/artifacts/compass.jpg',
+  // watch:'images/cards/artifacts/watch.jpg',
+  // foot:'images/cards/artifacts/foot.jpg',
+  // candle:'images/cards/artifacts/candle.jpg',
+  // jammer:'images/cards/artifacts/jammer.jpg',
+  // jar:'images/cards/artifacts/jar.jpg',
+  // skull:'images/cards/artifacts/skull.jpg',
+  // locket:'images/cards/artifacts/locket.jpg',
+  // coin:'images/cards/artifacts/coin.jpg',
+  // map:'images/cards/artifacts/map.jpg',
+  // hexbag:'images/cards/artifacts/hexbag.jpg',
+  // bone:'images/cards/artifacts/bone.jpg',
+  // prism:'images/cards/artifacts/prism.jpg',
+  // TOOLS — images/cards/tools/
+  // evp:'images/cards/tools/evp.jpg',
+  // camera:'images/cards/tools/camera.jpg',
+  // emf:'images/cards/tools/emf.jpg',
+  // nvg:'images/cards/tools/nvg.jpg',
+  // scanner:'images/cards/tools/scanner.jpg',
+  // torch:'images/cards/tools/torch.jpg',
+  // gasmask:'images/cards/tools/gasmask.jpg',
+  // burner:'images/cards/tools/burner.jpg',
+  // geigercount:'images/cards/tools/geigercount.jpg',
+  // dashcam:'images/cards/tools/dashcam.jpg',
+  // firstaid:'images/cards/tools/firstaid.jpg',
+  // rope:'images/cards/tools/rope.jpg',
+  // drone:'images/cards/tools/drone.jpg',
+  // shortwave:'images/cards/tools/shortwave.jpg',
+  // INSTINCT — images/cards/instinct/
+  // veteran:'images/cards/instinct/veteran.jpg',
+  // bad:'images/cards/instinct/bad.jpg',
+  // fof:'images/cards/instinct/fof.jpg',
+  // local:'images/cards/instinct/local.jpg',
+  // pattern:'images/cards/instinct/pattern.jpg',
+  // steady:'images/cards/instinct/steady.jpg',
+  // trust:'images/cards/instinct/trust.jpg',
+  // rightcall:'images/cards/instinct/rightcall.jpg',
+  // gut:'images/cards/instinct/gut.jpg',
+  // survivor:'images/cards/instinct/survivor.jpg',
+  // deception:'images/cards/instinct/deception.jpg',
+  // freeze:'images/cards/instinct/freeze.jpg',
+  // sixth:'images/cards/instinct/sixth.jpg',
+  // muscle:'images/cards/instinct/muscle.jpg',
+  // MEMORY — images/cards/memory/
+  // notes:'images/cards/memory/notes.jpg',
+  // legend:'images/cards/memory/legend.jpg',
+  // seen:'images/cards/memory/seen.jpg',
+  // lasttime:'images/cards/memory/lasttime.jpg',
+  // read:'images/cards/memory/read.jpg',
+  // photo:'images/cards/memory/photo.jpg',
+  // warning:'images/cards/memory/warning.jpg',
+  // sound:'images/cards/memory/sound.jpg',
+  // dream:'images/cards/memory/dream.jpg',
+  // article:'images/cards/memory/article.jpg',
+  // faces:'images/cards/memory/faces.jpg',
+  // route:'images/cards/memory/route.jpg',
+  // name:'images/cards/memory/name.jpg',
+  // almanac:'images/cards/memory/almanac.jpg',
+  // INTERFERENCE — images/cards/interference/
+  // blowcover:'images/cards/interference/blowcover.jpg',
+  // badintel:'images/cards/interference/badintel.jpg',
+  // panic:'images/cards/interference/panic.jpg',
+  // wrongtool:'images/cards/interference/wrongtool.jpg',
+  // skeptic:'images/cards/interference/skeptic.jpg',
+  // looselips:'images/cards/interference/looselips.jpg',
+  // distraction:'images/cards/interference/distraction.jpg',
+  // tooclever:'images/cards/interference/tooclever.jpg',
+  // oldgrudge:'images/cards/interference/oldgrudge.jpg',
+  // yoink:'images/cards/interference/yoink.jpg',
+  // muddywater:'images/cards/interference/muddywater.jpg',
+  // butterfingers:'images/cards/interference/butterfingers.jpg',
+  // nowyouknow:'images/cards/interference/nowyouknow.jpg',
+  // redirect:'images/cards/interference/redirect.jpg',
+};
+
+// ============================================================
+// GAME STATE
+// ============================================================
+const uid=()=>Math.random().toString(36).slice(2);
+const shuf=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;};
+const roll1=()=>Math.floor(Math.random()*6)+1;
+const roll2d6=()=>roll1()+roll1();
+
+function buildDeck(){
+  const all=[...WEAPONS,...ARTIFACTS,...TOOLS,...INSTINCT,...MEMORY,...INTERFERENCE];
+  return shuf(all).map(c=>({...c,uid:uid()}));
+}
+
+let G={
+  players:[],cur:0,
+  sharedDeck:[],     // single shared draw pile — no per-player decks
+  encounters:[],currentEnc:null,totalEnc:0,
+  played:[],phase:'setup',round:0,
+  pendingDice:null,  // {plays, enc, intMsg} waiting for dice rolls
+  pendingDiceIdx:0,  // which play we're rolling for
+  diceResults:[],    // accumulated dice rolls
+  pendingTie:null,   // {candidates, enc, intMsg}
+};
+let selUid=null;
+
+// ============================================================
+// SETUP
+// ============================================================
+let pNames=['Player 1','Player 2'];
+function buildSetup(){
+  document.getElementById('pi-rows').innerHTML=pNames.map((n,i)=>`
+    <div class="pi-row">
+      <input type="text" value="${n}" placeholder="Player ${i+1}" oninput="pNames[${i}]=this.value">
+      ${i>1?`<button class="pi-rm" onclick="rmP(${i})">×</button>`:''}
+    </div>`).join('');
+}
+function addPlayer(){if(pNames.length>=5){notify('MAX 5 PLAYERS');return;}pNames.push('Player '+(pNames.length+1));buildSetup();}
+function rmP(i){pNames.splice(i,1);buildSetup();}
+
+function startGame(){
+  const names=[];
+  document.querySelectorAll('#pi-rows input').forEach(el=>names.push(el.value.trim()||'Player '+(names.length+1)));
+  if(names.length<2){notify('NEED AT LEAST 2 PLAYERS');return;}
+  // One shared deck dealt to all players — no duplicates across hands
+  const sharedDeck=buildDeck();
+  G.players=names.map(n=>({name:n,hand:[],deck:[],discard:[],trophies:[],out:false}));
+  // Deal 10 cards to each player from the single shared deck
+  G.players.forEach(p=>{for(let i=0;i<10;i++)if(sharedDeck.length)p.hand.push(sharedDeck.pop());});
+  // Remaining cards go into a shared draw pile on G
+  G.sharedDeck=sharedDeck;
+  const regs=shuf(ENCOUNTERS.filter(e=>!e.boss));
+  const bosses=ENCOUNTERS.filter(e=>e.boss);
+  G.encounters=[...regs,...bosses];
+  G.totalEnc=G.encounters.length;
+  G.cur=0;G.played=[];G.phase='playing';G.round=0;
+  document.getElementById('setup-ov').classList.add('hidden');
+  flipNext();
+  log('Game started! Read the encounter aloud, then each player picks a card.');
+}
+
+function newGame(){
+  ['res-ov','final-ov','dice-ov','tie-ov'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById('setup-ov').classList.remove('hidden');
+  document.getElementById('enc-zone').innerHTML='<div style="color:var(--muted);font-size:12px;letter-spacing:2px;padding:24px;text-align:center;line-height:2.5">START A NEW GAME<br>TO FLIP YOUR FIRST ENCOUNTER</div>';
+  G.phase='setup';selUid=null;
+  buildSetup();
+}
+
+// ============================================================
+// ENCOUNTER FLOW
+// ============================================================
+function flipNext(){
+  if(!G.encounters.length){endGame();return;}
+  G.currentEnc=G.encounters.shift();
+  G.played=[];
+  G.cur=G.round%G.players.length;
+  G.round++;
+  G.phase='playing';
+  selUid=null;
+  checkEmptyHands();
+  if(G.currentEnc.boss)SFX.boss();else SFX.flip();
+  renderAll();
+  log('"'+G.currentEnc.title+'" — '+curName()+'\'s turn first.');
+}
+
+function checkEmptyHands(){
+  G.players.forEach(p=>{
+    if(p.out) return;
+    if(p.hand.length===0){
+      p.out=true;
+      log(p.name+' has no cards — eliminated.');
+      notify(p.name.toUpperCase()+' IS OUT — NO CARDS LEFT');
+    }
+  });
+  const alive=G.players.filter(p=>!p.out);
+  if(alive.length<=1) setTimeout(endGame,800);
+}
+
+function checkEliminations(){
+  G.players.forEach(p=>{
+    if(!p.out&&p.hand.length===0){
+      p.out=true;
+      log(p.name+' ran out of cards — eliminated.');
+      notify(p.name.toUpperCase()+' IS OUT');
+    }
+  });
+  // if only one or zero players remain, end game
+  const alive=G.players.filter(p=>!p.out);
+  if(alive.length<=1) setTimeout(endGame,800);
+}
+
+// check if a player has ANY legal card for this encounter
+function hasLegalCard(player,enc){
+  return player.hand.some(c=>!enc.restrict.includes(c.type)&&c.type!=='interference');
+}
+
+function curName(){return G.players[G.cur]?.name||'—';}
+function curP(){return G.players[G.cur];}
+function hasPlayed(i){return G.played.some(x=>x.pi===i);}
+
+// ============================================================
+// CARD PLAY
+// ============================================================
+function selectCard(u){
+  if(G.phase!=='playing'){notify('NOT THE RIGHT TIME');return;}
+  if(hasPlayed(G.cur)){notify('ALREADY PLAYED THIS ROUND');return;}
+  SFX.click();
+  const p=curP();
+  if(!p?.hand.find(c=>c.uid===u))return;
+  selUid=selUid===u?null:u;
+  renderHand();
+  renderEncounter();
+  updateHandInfo();
+}
+
+function updateHandInfo(){
+  const p=curP();if(!p)return;
+  const c=p.hand.find(x=>x.uid===selUid);
+  if(hasPlayed(G.cur)){
+    document.getElementById('hand-info').textContent=p.name.toUpperCase()+' — WAITING FOR OTHER PLAYERS';
+  } else if(c){
+    const isDice=c.dice===true;
+    const isInt=c.type==='interference';
+    document.getElementById('hand-info').textContent='SELECTED: '+c.name.toUpperCase()+(isDice?' — ROLL 2d6':isInt?' — SABOTAGE':' — PWR '+c.power)+' · CLICK PLAY CARD';
+  } else {
+    document.getElementById('hand-info').textContent=p.name.toUpperCase()+' — SELECT A CARD AND CLICK PLAY';
+  }
+}
+
+function playCard(){
+  if(!selUid){notify('SELECT A CARD FIRST');return;}
+  if(G.phase!=='playing')return;
+  const p=curP();if(!p||p.out)return;
+  if(hasPlayed(G.cur)){notify('ALREADY PLAYED');return;}
+  const idx=p.hand.findIndex(c=>c.uid===selUid);
+  if(idx===-1){notify('CARD NOT FOUND');return;}
+  const card=p.hand.splice(idx,1)[0];
+  G.played.push({pi:G.cur,card});
+  p.discard.push({...card});
+  selUid=null;
+  if(card.type==='interference')SFX.interference();else SFX.play();
+  log(p.name+' played: '+card.name+(card.type==='interference'?' [INTERFERENCE]':''));
+  notify(p.name.toUpperCase()+': '+card.name.toUpperCase());
+  advancePlayer();
+  renderAll();
+}
+
+function passCard(){
+  if(G.phase!=='playing')return;
+  if(hasPlayed(G.cur)){notify('ALREADY PLAYED');return;}
+  const p=curP();
+  G.played.push({pi:G.cur,card:null});
+  selUid=null;
+  log(p.name+' passes.');
+  notify(p.name.toUpperCase()+' PASSES');
+  advancePlayer();
+  renderAll();
+}
+
+function advancePlayer(){
+  selUid=null;
+  let tries=0;
+  do{G.cur=(G.cur+1)%G.players.length;tries++;if(tries>G.players.length)break;}
+  while(hasPlayed(G.cur)||G.players[G.cur].out);
+
+  const ap=curP();
+  if(ap&&!ap.out&&!hasPlayed(G.cur)){
+    // no cards at all — auto sacrifice empty play
+    if(ap.hand.length===0){
+      G.played.push({pi:G.cur,card:{id:'empty',name:'Empty Hand',type:'none',power:0,uid:'empty-'+G.cur},sacrifice:true});
+      log(ap.name+' has no cards — forced out this round.');
+      advancePlayer();return;
+    }
+    // has cards but none are legal for this encounter — force sacrifice
+    if(!hasLegalCard(ap,G.currentEnc)){
+      // auto-sacrifice lowest power card
+      ap.hand.sort((a,b)=>(a.power||0)-(b.power||0));
+      const sacrificed=ap.hand.splice(0,1)[0];
+      ap.discard.push({...sacrificed});
+      G.played.push({pi:G.cur,card:{...sacrificed,_sacrificed:true,power:0},sacrifice:true});
+      log(ap.name+' has no legal cards — sacrificed '+sacrificed.name+' (scores 0, takes penalty).');
+      notify(ap.name.toUpperCase()+' SACRIFICES '+sacrificed.name.toUpperCase()+' — NO LEGAL CARDS');
+      advancePlayer();return;
+    }
+  }
+
+  const active=G.players.filter(p=>!p.out);
+  const doneCount=G.played.filter(x=>!G.players[x.pi].out).length;
+  if(doneCount>=active.length){G.phase='resolving';setTimeout(resolveRound,400);}
+}
+
+// ============================================================
+// RESOLVE
+// ============================================================
+function resolveRound(){
+  const enc=G.currentEnc;
+  const intPlays=G.played.filter(x=>x.card&&x.card.type==='interference');
+  const regPlays=G.played.filter(x=>x.card&&x.card.type!=='interference');
+  const intMsg=intPlays.length?intPlays.map(x=>G.players[x.pi].name+' played '+x.card.name+'.').join(' '):'';
+
+  if(!regPlays.length){showFail('Everyone passed. The situation resolved itself. Badly. '+intMsg);return;}
+
+  // perfect match
+  const pm=regPlays.find(x=>x.card.id===enc.pmId);
+  if(pm){
+    // still need to find the weakest among remaining plays
+    const others=regPlays.filter(x=>x.pi!==pm.pi);
+    const scored=others.map(x=>({...x,score:scoreCard(x.card,enc)}));
+    scored.sort((a,b)=>a.score-b.score);
+    const weakest=scored.length?scored[0]:pm; // if solo, winner = weakest
+    const weakestTied=scored.filter(x=>x.score===(scored[0]?.score));
+    finaliseRound(pm,weakest,weakestTied.length?weakestTied:[pm],enc,intMsg);
+    return;
+  }
+
+  // collect plays that need dice rolls
+  const diceNeeded=regPlays.filter(x=>x.card.dice===true);
+  if(diceNeeded.length>0){
+    G.pendingDice={plays:regPlays,enc,intMsg};
+    G.pendingDiceIdx=0;
+    G.diceResults=[];
+    rollNextDice();
+  } else {
+    scoreAndResolve(regPlays,enc,intMsg);
+  }
+}
+
+// ============================================================
+// DICE SYSTEM
+// ============================================================
+function rollNextDice(){
+  const {plays}=G.pendingDice;
+  const diceNeeded=plays.filter(x=>x.card.dice===true);
+  if(G.pendingDiceIdx>=diceNeeded.length){
+    // all dice rolled — apply results and resolve
+    diceNeeded.forEach((x,i)=>{x.card._rolledPower=G.diceResults[i];});
+    scoreAndResolve(plays,G.pendingDice.enc,G.pendingDice.intMsg);
+    return;
+  }
+  const current=diceNeeded[G.pendingDiceIdx];
+  const pName=G.players[current.pi].name;
+  showDiceModal(pName,current.card.name,()=>{
+    const r=roll2d6();
+    G.diceResults.push(r);
+    G.pendingDiceIdx++;
+    rollNextDice();
+  });
+}
+
+function showDiceModal(pName,cardName,onRoll){
+  document.getElementById('dice-sub').textContent=pName+' played '+cardName+'. Roll 2d6 to reveal its Power.';
+  document.getElementById('die1').textContent='?';document.getElementById('die1').className='die';
+  document.getElementById('die2').textContent='?';document.getElementById('die2').className='die';
+  document.getElementById('dice-total').textContent='—';
+  const btn=document.getElementById('dice-btn');
+  btn.textContent='ROLL 2d6';
+  btn.disabled=false;
+  let rolled=false;
+  btn.onclick=()=>{
+    if(rolled)return;rolled=true;
+    SFX.dice();
+    const d1=roll1(),d2=roll1(),total=d1+d2;
+    // animate shake
+    ['die1','die2'].forEach(id=>{const el=document.getElementById(id);el.classList.add('shaking');});
+    setTimeout(()=>{
+      document.getElementById('die1').textContent=d1;document.getElementById('die1').className='die rolled';
+      document.getElementById('die2').textContent=d2;document.getElementById('die2').className='die rolled';
+      document.getElementById('dice-total').textContent=total;
+      btn.textContent='CONTINUE →';
+      btn.onclick=()=>{
+        document.getElementById('dice-ov').classList.add('hidden');
+        onRoll();
+      };
+    },500);
+  };
+  document.getElementById('dice-ov').classList.remove('hidden');
+}
+
+function diceAction(){} // placeholder — onclick set dynamically
+
+// ============================================================
+// SCORING
+// ============================================================
+function scoreCard(card,enc){
+  if(!card||card.type==='interference')return-1;
+  // check restriction — restricted cards cannot win spotlight (score -1)
+  if(enc.restrict&&enc.restrict.includes(card.type))return-1;
+  if(enc.boss)return card._rolledPower||card.power||0;
+  const ch=enc.challenge.toLowerCase();
+  const match=(ch.includes('weapon')&&card.type==='weapon')||(ch.includes('tool')&&card.type==='tool')||(ch.includes('artifact')&&card.type==='artifact')||(ch.includes('instinct')&&card.type==='instinct')||(ch.includes('memory')&&card.type==='memory');
+  const power=card._rolledPower||card.power||0;
+  const pm=ch.match(/power\s*(\d+)\+/);const threshold=pm?parseInt(pm[1]):0;
+  if(match&&power>=threshold)return 10+(power-threshold);
+  if(match)return 5+power;
+  return power;
+}
+
+// ── PERK & PENALTY ENGINE ────────────────────────────────────
+
+function applyPerk(pi,enc){
+  const p=G.players[pi];
+  const type=enc.perkType||'draw_count';
+  const n=enc.perkCount||1;
+  let msg='';
+
+  if(type==='draw_count'||type==='draw_and_preview'||type==='draw_and_steal'){
+    const drawn=Math.min(n,G.sharedDeck.length);
+    for(let i=0;i<drawn;i++)p.hand.push(G.sharedDeck.pop());
+    msg='Drew '+drawn+' card'+(drawn!==1?'s':'')+'.';
+  }
+  if(type==='draw_and_preview'){
+    msg+=' Peek at the next encounter.';
+    // preview handled in result display
+  }
+  if(type==='draw_and_steal'){
+    msg+=' Steal 1 card from any other player. (Resolve at the table in physical play.)';
+  }
+  return msg||'Perk applied.';
+}
+
+function applyPenalty(pi,enc){
+  const p=G.players[pi];
+  const type=enc.penaltyType||'discard_count';
+  const n=enc.penaltyCount||1;
+  let lost=0,msg='';
+
+  if(type==='discard_count'){
+    const count=Math.min(n,p.hand.length);
+    for(let i=0;i<count;i++)p.discard.push(p.hand.splice(0,1)[0]);
+    lost=count;
+    msg='Discarded '+count+' card'+(count!==1?'s':'')+'.';
+  }
+  else if(type==='lose_weapons'){
+    const removed=p.hand.filter(c=>c.type==='weapon');
+    p.hand=p.hand.filter(c=>c.type!=='weapon');
+    removed.forEach(c=>p.discard.push(c));
+    lost=removed.length;
+    msg=lost>0?'Lost all '+lost+' Weapon card'+(lost!==1?'s':'')+' — dropped in the chaos.':'No weapons to lose.';
+  }
+  else if(type==='lose_memory'){
+    const removed=p.hand.filter(c=>c.type==='memory');
+    p.hand=p.hand.filter(c=>c.type!=='memory');
+    removed.forEach(c=>p.discard.push(c));
+    lost=removed.length;
+    msg=lost>0?'Lost all '+lost+' Memory card'+(lost!==1?'s':'')+' — memory wiped.':'No memory cards to lose.';
+  }
+  else if(type==='lose_tools'){
+    const removed=p.hand.filter(c=>c.type==='tool');
+    p.hand=p.hand.filter(c=>c.type!=='tool');
+    removed.forEach(c=>p.discard.push(c));
+    lost=removed.length;
+    msg=lost>0?'Lost all '+lost+' Tool card'+(lost!==1?'s':'')+' — toolbox gone.':'No tools to lose.';
+  }
+  else if(type==='lose_artifacts'){
+    const removed=p.hand.filter(c=>c.type==='artifact');
+    p.hand=p.hand.filter(c=>c.type!=='artifact');
+    removed.forEach(c=>p.discard.push(c));
+    lost=removed.length;
+    msg=lost>0?'Lost all '+lost+' Artifact'+(lost!==1?'s':'')+' — the strange things are gone.':'No artifacts to lose.';
+  }
+  else if(type==='lose_highest'){
+    if(p.hand.length){
+      p.hand.sort((a,b)=>(b.power||0)-(a.power||0));
+      const gone=p.hand.splice(0,1)[0];
+      p.discard.push(gone);
+      msg='Lost highest Power card: '+gone.name+'.';
+      lost=1;
+    } else {msg='Nothing to lose.';}
+  }
+  else if(type==='discard_to_3'){
+    if(p.hand.length>3){
+      const extra=p.hand.length-3;
+      // discard lowest power cards first
+      p.hand.sort((a,b)=>(a.power||0)-(b.power||0));
+      for(let i=0;i<extra;i++)p.discard.push(p.hand.splice(0,1)[0]);
+      lost=extra;
+      msg='Discarded down to 3 cards — lost '+extra+' card'+(extra!==1?'s':'')+'.';
+    } else {msg='Already at 3 cards or fewer.';}
+  }
+  else if(type==='skip_next'){
+    p._skipNext=true;
+    msg='Must skip next encounter turn.';
+  }
+
+  return {msg,lost};
+}
+
+function scoreAndResolve(plays,enc,intMsg){
+  // filter out empty-hand auto-plays
+  const valid=plays.filter(x=>x.card&&x.card.id!=='empty');
+  if(!valid.length){
+    SFX.fail();
+    showFail('Nobody had cards to play. '+enc.failure);
+    return;
+  }
+
+  const scored=valid.map(x=>({...x,score:scoreCard(x.card,enc)}));
+  scored.sort((a,b)=>b.score-a.score);
+
+  const topScore=scored[0].score;
+  const botScore=scored[scored.length-1].score;
+
+  // find weakest — lowest score, could be same as winner if solo
+  const weakest=scored[scored.length-1];
+  const weakestTied=scored.filter(x=>x.score===botScore);
+
+  // check for winner tie
+  const topTied=scored.filter(x=>x.score===topScore);
+  if(topTied.length>1){
+    G.pendingTie={candidates:topTied,enc,intMsg,weakest,weakestTied};
+    showTieModal(topTied);
+    return;
+  }
+
+  const winner=scored[0];
+  finaliseRound(winner,weakest,weakestTied,enc,intMsg);
+}
+
+function finaliseRound(winner,weakest,weakestTied,enc,intMsg){
+  const wp=G.players[winner.pi];
+  const isBoss=enc.boss;
+
+  // award trophy
+  const tc=isBoss?2:1;
+  for(let i=0;i<tc;i++)wp.trophies.push({...enc,bossWin:isBoss});
+
+  // success perk — winner
+  const perkMsg=applyPerk(winner.pi,enc);
+
+  // failure penalty — weakest player(s) — skip if same as winner (solo edge case)
+  let penaltyMsg='';
+  if(weakest&&weakest.pi!==winner.pi){
+    weakestTied.forEach(x=>{
+      const result=applyPenalty(x.pi,enc);
+      penaltyMsg+=G.players[x.pi].name+': '+result.msg+' ';
+    });
+  }
+
+  // check eliminations after penalties applied
+  checkEliminations();
+
+  SFX.trophy();
+  const diceNote=winner.card._rolledPower?' (rolled '+winner.card._rolledPower+')':'';
+  const weakName=weakest&&weakest.pi!==winner.pi?weakestTied.map(x=>G.players[x.pi].name).join(' & '):'';
+  const weakCard=weakest&&weakest.pi!==winner.pi?weakest.card:null;
+
+  // ── FIRST TO 5 TROPHIES WINS ──
+  if(wp.trophies.length>=5){
+    SFX.win();
+    setTimeout(()=>endGameWinner(winner.pi,'FIRST TO 5 TROPHIES'),800);
+    return;
+  }
+
+  showRoundResult(
+    winner.pi,winner.card,
+    isBoss?'BOSS DEFEATED':'SPOTLIGHT CLAIMED',
+    enc.success,isBoss,diceNote,perkMsg,
+    weakCard?{name:weakName,card:weakCard,msg:penaltyMsg.trim()}:null,
+    intMsg
+  );
+}
+
+// ============================================================
+// TIEBREAKER
+// ============================================================
+function showTieModal(tied){
+  document.getElementById('tie-rows').innerHTML=tied.map(x=>`
+    <div class="tie-row" id="trow-${x.pi}">
+      <div class="tie-pn">${G.players[x.pi].name}</div>
+      <div class="tie-rv" id="trv-${x.pi}">—</div>
+    </div>`).join('');
+  document.getElementById('tie-btn').textContent='ROLL 2d6 FOR TIEBREAKER';
+  document.getElementById('tie-ov').classList.remove('hidden');
+}
+
+function rollTiebreaker(){
+  if(!G.pendingTie)return;
+  SFX.dice();
+  const {candidates,enc,intMsg,weakest,weakestTied}=G.pendingTie;
+  const rolls=candidates.map(x=>({...x,tr:roll2d6()}));
+  rolls.forEach(x=>{const el=document.getElementById('trv-'+x.pi);if(el)el.textContent=x.tr;});
+  rolls.sort((a,b)=>b.tr-a.tr);
+  const topRoll=rolls[0].tr;
+  const stillTied=rolls.filter(x=>x.tr===topRoll);
+  rolls.forEach(x=>{const r=document.getElementById('trow-'+x.pi);if(r)r.classList.toggle('win',x.tr===topRoll);});
+  if(stillTied.length>1){
+    // still tied — auto-reroll after showing the result
+    document.getElementById('tie-btn').textContent='STILL TIED — ROLLING AGAIN...';
+    document.getElementById('tie-btn').disabled=true;
+    G.pendingTie={...G.pendingTie,candidates:stillTied};
+    setTimeout(()=>{
+      document.getElementById('tie-btn').disabled=false;
+      rollTiebreaker();
+    },1400);
+    return;
+  }
+  const winner=rolls[0];
+  setTimeout(()=>{
+    document.getElementById('tie-ov').classList.add('hidden');
+    G.pendingTie=null;
+    notify(G.players[winner.pi].name.toUpperCase()+' WINS TIE — ROLLED '+winner.tr);
+    finaliseRound(winner,weakest,weakestTied,enc,intMsg);
+  },1000);
+}
+
+// ============================================================
+// RESULT DISPLAY
+// ============================================================
+function showRoundResult(winPi,winCard,eyebrow,successText,isBoss,diceNote,perkMsg,loser,intMsg){
+  const wp=G.players[winPi];
+  document.getElementById('res-top').className='res-top '+(isBoss?'boss':'suc');
+  document.getElementById('res-eye').textContent=eyebrow;
+  document.getElementById('res-title').textContent=isBoss?'BOSS DEFEATED':'SPOTLIGHT CLAIMED';
+  document.getElementById('res-title').className='res-title '+(isBoss?'boss':'suc');
+  document.getElementById('res-desc').textContent=successText+(intMsg?' — '+intMsg:'');
+  const rw=document.getElementById('res-winner');
+  rw.classList.remove('hidden');
+  document.getElementById('rw-name').textContent=wp.name;
+  document.getElementById('rw-card').textContent='Played: '+winCard.name+(diceNote||'')+(isBoss?' — Worth 2 trophies':'')+' · '+perkMsg;
+  const loserEl=document.getElementById('res-loser');
+  if(loser){
+    loserEl.classList.remove('hidden');
+    document.getElementById('rl-name').textContent=loser.name;
+    document.getElementById('rl-card').textContent='Played: '+loser.card.name+' · '+loser.msg;
+  } else {
+    loserEl.classList.add('hidden');
+  }
+  document.getElementById('res-btns').innerHTML=G.encounters.length
+    ?'<button class="btn bl" onclick="nextRound()">NEXT ENCOUNTER →</button>'
+    :'<button class="btn bl" onclick="endGame()">SEE FINAL SCORE →</button>';
+  log('Spotlight: '+wp.name+' | Weakest: '+(loser?loser.name:'none'));
+  renderSidebar();
+  document.getElementById('res-ov').classList.remove('hidden');
+}
+
+function showFail(desc){
+  G.players.forEach(p=>{if(!p.out&&p.hand.length)p.discard.push(p.hand.splice(0,1)[0]);});
+  document.getElementById('res-top').className='res-top fail';
+  document.getElementById('res-eye').textContent=G.currentEnc.title.toUpperCase();
+  document.getElementById('res-title').textContent='GROUP FAILURE';
+  document.getElementById('res-title').className='res-title fail';
+  document.getElementById('res-desc').textContent=desc+' Everyone discards 1 card.';
+  document.getElementById('res-winner').classList.add('hidden');
+  document.getElementById('res-loser').classList.add('hidden');
+  document.getElementById('res-btns').innerHTML=G.encounters.length
+    ?'<button class="btn bl" onclick="nextRound()">NEXT ENCOUNTER →</button>'
+    :'<button class="btn bl" onclick="endGame()">SEE FINAL SCORE →</button>';
+  renderSidebar();
+  document.getElementById('res-ov').classList.remove('hidden');
+}
+
+function nextRound(){document.getElementById('res-ov').classList.add('hidden');flipNext();}
+
+// ============================================================
+// END GAME
+// ============================================================
+function endGameWinner(pi,reason){
+  ['res-ov','dice-ov','tie-ov'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  G.phase='gameover';
+  const w=G.players[pi];
+  const sorted=[...G.players].sort((a,b)=>b.trophies.length-a.trophies.length);
+  document.getElementById('final-t').textContent=w.name.toUpperCase()+' WINS';
+  document.getElementById('final-s').textContent=reason||'First to 5 trophies';
+  document.getElementById('final-tag').textContent='It wasn\'t nothing. It was '+w.name+'.';
+  showFinalScores(sorted);
+  document.getElementById('final-ov').classList.remove('hidden');
+  log(w.name+' wins! '+reason);
+}
+
+function endGame(){
+  // fallback — deck ran out, count trophies
+  ['res-ov','dice-ov','tie-ov'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  G.phase='gameover';SFX.win();
+  const sorted=[...G.players].sort((a,b)=>b.trophies.length-a.trophies.length);
+  const w=sorted[0];
+  document.getElementById('final-t').textContent='STORY ENDS';
+  document.getElementById('final-s').textContent='"It\'s probably nothing."';
+  document.getElementById('final-tag').textContent=w.name+' had '+w.trophies.length+' trophy'+(w.trophies.length!==1?'ies':'y')+'. It was not nothing.';
+  showFinalScores(sorted);
+  document.getElementById('final-ov').classList.remove('hidden');
+  log('Game over! '+w.name+' wins with '+w.trophies.length+' trophies.');
+}
+
+function showFinalScores(sorted){
+  document.getElementById('final-rows').innerHTML=sorted.map((p,i)=>`
+    <div class="final-row${i===0?' win':''}${p.out?' style="opacity:.5"':''}">
+      <div class="fr-rank">${i===0?'★':(i+1)}</div>
+      <div class="fr-name">${p.name}${p.out?' (eliminated)':''}</div>
+      <div class="fr-score">
+        <div class="num">${p.trophies.length}</div>
+        <div class="lbl">TROPHIES</div>
+      </div>
+    </div>`).join('');
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderAll(){renderHand();renderEncounter();renderSidebar();}
+
+const ICONS={
+  weapon:'M3 17L17 3l4 4L7 21l-4-4z',
+  artifact:'M12 2C8 2 5 5 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-4-3-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z',
+  tool:'M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18',
+  instinct:'M12 2L8 8H4l4 6-2 6 6-3 6 3-2-6 4-6h-4z',
+  memory:'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z',
+  interference:'M1 21L12 2l11 19H1zm11-3a1 1 0 100-2 1 1 0 000 2zm-1-3h2v-4h-2v4z',
+};
+const LABELS={weapon:'WEAPON',artifact:'ARTIFACT',tool:'TOOL',instinct:'INSTINCT',memory:'MEMORY',interference:'INTERFERENCE'};
+
+function cardHtml(c,isSel,isSpent,isRestricted=false){
+  const t=c.type,isInt=t==='interference',isDice=c.dice===true;
+  const icon=ICONS[t]||ICONS.tool;
+  const imgSrc=CARD_IMAGES[c.id];
+  const imgInner=imgSrc
+    ?`<img src="${imgSrc}" alt="${c.name}" loading="lazy">`
+    :`<div class="cph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="${icon}" stroke-linecap="round"/></svg><span>${c.id.toUpperCase()}</span></div>`;
+  const footStat=isInt?`<span class="cpwr cp-sab">SABOTAGE</span>`:isDice?`<span class="cpwr cp-dice">2d6 ROLL</span>`:`<span class="cpwr cp-fixed">PWR ${c.power}</span>`;
+  const restrictedBadge=isRestricted?`<span style="font-family:'Bebas Neue',sans-serif;font-size:8px;letter-spacing:2px;padding:2px 5px;background:rgba(230,57,70,.2);color:var(--red);border:1px solid rgba(230,57,70,.4)">BLOCKED</span>`:'';
+  const dimStyle=isRestricted?'opacity:.35;filter:grayscale(.6);':'';
+  return `<div class="card${isSel&&!isRestricted?' sel':''}${isSpent?' spent':''}${isInt?' icard':''}" style="${dimStyle}" onclick="${isSpent||isRestricted?'':('selectCard(\''+c.uid+'\')')}" title="${isRestricted?'RESTRICTED — cannot win Spotlight this encounter':''}">
+    <div class="cimg ti-${t}">${imgInner}</div>
+    <div class="cbody">
+      <div style="display:flex;align-items:center;gap:4px;margin-bottom:2px">
+        <span class="cbadge b${t}">${LABELS[t]||t.toUpperCase()}</span>
+        ${restrictedBadge}
+      </div>
+      <div class="cname">${c.name}</div>
+      <div class="cflavor">${c.flavor||''}</div>
+      <div class="ceffect">${c.effect||''}</div>
+      <div class="cfoot">${footStat}</div>
+    </div>
+  </div>`;
+}
+
+function renderHand(){
+  if(!G.players.length)return;
+  const p=curP();if(!p)return;
+  updateHandInfo();
+  const el=document.getElementById('hand-cards');
+  if(!p.hand.length){el.innerHTML='<div style="color:var(--muted);font-size:12px;letter-spacing:2px;padding:8px">HAND EMPTY</div>';return;}
+  const spent=hasPlayed(G.cur);
+  const enc=G.currentEnc;
+  el.innerHTML=p.hand.map(c=>{
+    // show restricted cards as dimmed with a strikethrough badge
+    const isRestricted=enc&&enc.restrict&&enc.restrict.includes(c.type);
+    return cardHtml(c,c.uid===selUid,spent,isRestricted);
+  }).join('');
+}
+
+function renderEncounter(){
+  if(!G.currentEnc)return;
+  const enc=G.currentEnc;
+  const isMyTurn=G.phase==='playing'&&!hasPlayed(G.cur)&&!curP()?.out;
+  const canPlay=isMyTurn&&!!selUid;
+
+  const diffColor={EASY:'var(--green)',MODERATE:'var(--blue)',HARD:'var(--orange)',BRUTAL:'var(--red)',BOSS:'var(--red)'}[enc.diff]||'var(--muted)';
+
+  const imgSrc=ENCOUNTER_IMAGES[enc.id];
+  const imgInner=imgSrc
+    ?`<img src="${imgSrc}" alt="${enc.title}" loading="lazy" style="width:100%;height:100%;object-fit:cover">`
+    :`<div class="enc-iph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="${enc.boss?'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5':'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z'}" stroke-linecap="round"/></svg><span>${enc.id.toUpperCase()}.JPG</span></div>`;
+
+  const encHtml=`<div class="enc-card${enc.boss?' boss':''}">
+    <div class="enc-topbar"></div>
+    <div class="enc-img">${imgInner}</div>
+    <div class="enc-body">
+      <div class="enc-meta">
+        <div class="enc-cat">${enc.cat}</div>
+        <div class="diff-badge" style="color:${diffColor};border-color:${diffColor}">${enc.diff}${enc.threshold?' — PWR '+enc.threshold+'+':''}</div>
+      </div>
+      <div class="enc-title">${enc.title}</div>
+      <div class="enc-sit">${enc.situation}</div>
+      <div class="enc-rules">
+        <div class="enc-rule"><span class="rtag rt-ch">CHALLENGE</span><div class="rbody">${enc.challenge}</div></div>
+        ${enc.restrict&&enc.restrict.length?`<div class="enc-rule"><span class="rtag rt-no">RESTRICTED</span><div class="rbody" style="color:var(--red);font-weight:500">${enc.restrictLabel}</div></div>`:'<div class="enc-rule"><span class="rtag rt-open">OPEN</span><div class="rbody" style="color:var(--green)">Any card type may be played</div></div>'}
+        <div class="enc-rule"><span class="rtag rt-pm">PERFECT MATCH</span><div class="rbody"><strong>${enc.pm}</strong></div></div>
+        <div class="enc-rule"><span class="rtag rt-win">SUCCESS</span><div class="rbody">${enc.success}</div></div>
+        <div class="enc-rule"><span class="rtag rt-fail">FAILURE</span><div class="rbody">${enc.failure}</div></div>
+      </div>
+    </div>
+  </div>`;
+
+  const pcards=G.played.length===0
+    ?'<div class="pz-empty">WAITING FOR PLAYERS TO RESPOND...</div>'
+    :G.played.map(x=>{
+        const p=G.players[x.pi],c=x.card;
+        if(!c)return`<div class="mc"><div class="mc-p">${p.name}</div><div class="mc-n">PASS</div></div>`;
+        const isInt=c.type==='interference';
+        const pw=c._rolledPower?c.type.toUpperCase()+' · ROLLED '+c._rolledPower:isInt?'INTERFERENCE':c.type.toUpperCase()+(c.dice?' · 2d6':' · PWR '+c.power);
+        return`<div class="mc${G.phase==='resolving'?' win':''}${isInt?' icard':''}"><div class="mc-p">${p.name}</div><div class="mc-n">${c.name}</div><div class="mc-m">${pw}</div></div>`;
+      }).join('');
+
+  const playedHtml=`<div class="played-zone">
+    <div class="pz-lbl">CARDS PLAYED THIS ROUND</div>
+    <div class="pz-cards">${pcards}</div>
+  </div>`;
+
+  const actionHtml=`<div class="abar">
+    <button class="btn bl" onclick="playCard()" ${!canPlay?'disabled':''}>PLAY CARD</button>
+    <div class="enc-ctr">ENCOUNTER <span>${G.round}</span> / ${G.totalEnc}</div>
+  </div>`;
+
+  document.getElementById('enc-zone').innerHTML=encHtml+playedHtml+actionHtml;
+}
+
+function renderSidebar(){
+  if(!G.players.length)return;
+  const ap=curP();
+  document.getElementById('ti-name').textContent=G.phase==='resolving'?'RESOLVING...':ap?.name||'—';
+  document.getElementById('ti-sub').textContent=G.phase==='playing'?(hasPlayed(G.cur)?'Waiting for others...':'Your turn — pick a card and play'):G.phase==='resolving'?'Determining the Spotlight...':'';
+  document.getElementById('sb-rows').innerHTML=G.players.map((p,i)=>`
+    <div class="sb-row${i===G.cur&&G.phase==='playing'?' active':''}${p.out?' style="opacity:.35"':''}">
+      <div class="sb-name">${p.name}${p.out?' ✗':''}</div>
+      <div class="sb-r">
+        <div class="sb-trophies">${p.trophies.map(t=>`<div class="tpip${t.bossWin?' boss':''}"></div>`).join('')}</div>
+        <div class="sb-cards"><span style="color:${p.trophies.length>=4?'var(--orange)':'inherit'}">${p.trophies.length}</span><span style="color:var(--muted)">/5</span></div>
+      </div>
+    </div>`).join('');
+  const rem=G.encounters.length;
+  document.getElementById('ds-fill').style.width=Math.round((rem/G.totalEnc)*100)+'%';
+  document.getElementById('ds-txt').innerHTML='<span>'+rem+'</span> encounter'+(rem!==1?'s':'')+' remaining';
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+let nt;
+function notify(m){const el=document.getElementById('notif');el.textContent=m;el.classList.remove('hidden','fade');clearTimeout(nt);nt=setTimeout(()=>{el.classList.add('fade');setTimeout(()=>el.classList.add('hidden'),300);},2200);}
+function log(m){document.getElementById('log').textContent=m;}
+
+// ============================================================
+// INIT
+// ============================================================
+buildSetup();
+</script>
+</body>
+</html>
